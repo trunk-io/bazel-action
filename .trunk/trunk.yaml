@@ -1,0 +1,18 @@
+version: 0.1
+cli:
+  version: 1.16.2
+plugins:
+  sources:
+    - id: trunk
+      ref: v1.2.5
+      uri: https://github.com/trunk-io/plugins
+    - id: configs
+      uri: https://github.com/trunk-io/configs
+      ref: v0.0.7
+runtimes:
+  enabled:
+    - node@18.12.1
+    - python@3.10.8
+lint:
+  disabled:
+    - eslint
