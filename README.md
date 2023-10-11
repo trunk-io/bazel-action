@@ -1,11 +1,14 @@
 # bazel-action
 
-Provides a GitHub Action for computing, uploading, and testing bazel targets. Functions as an extension to the [Trunk Merge GitHub Action](https://github.com/trunk-io/merge-action). To get beta access to the Merge Graph, contact us
-on [Slack](https://slack.trunk.io).
+Provides a GitHub Action for computing, uploading, and testing bazel targets. Functions as an
+extension to the [Trunk Merge GitHub Action](https://github.com/trunk-io/merge-action). To get beta
+access to the Merge Graph, contact us on [Slack](https://slack.trunk.io).
 
 ## Overview
 
-Using impacted targets lets you only test what you need to test, saving CI time and money! Use this action to upload targets to the Trunk MergeGraph or to run tests on impacted targets directly, or both!
+Using impacted targets lets you only test what you need to test, saving CI time and money! Use this
+action to upload targets to the Trunk MergeGraph or to run tests on impacted targets directly, or
+both!
 
 Trunk’s MergeGraph keeps your main branch green by ensuring that tests pass prior to merging your
 main branch. The MergeGraph, unlike traditional MergeQueues, increases throughput by only testing
@@ -38,9 +41,9 @@ jobs:
       - name: Upload and Test Impacted Targets
         uses: trunk-io/bazel-action@v1
         with:
-          ### To upload targets (default true)
+          ### To upload targets (default false)
           upload-targets: "true"
-          ### To run tests (default false)
+          ### To run tests (default true)
           test-targets: "true"
           ### Use your repositories API token to authenticate impacted targets uploads.
           trunk-token: ${{ secrets.TRUNK_REPO_API_TOKEN }}

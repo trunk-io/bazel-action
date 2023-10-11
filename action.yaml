@@ -35,10 +35,25 @@ inputs:
       See https://github.com/dorny/paths-filter/blob/master/.github/filters.yml for an example.
     required: false
     default: ""
+  upload-targets:
+    description:
+      Upload targets to the Trunk MergeGraph. Required for each PR if using the MergeGraph.
+    required: false
+    default: "false"
+  test-targets:
+    description: Run bazel test on the computed targets. Recommended if running on PRs.
+    required: false
+    default: "true"
 
 runs:
   using: composite
   steps:
+    - name: Validate inputs
+      id: validate-inputs
+      if: inputs.upload-targets != 'true' && inputs.test-targets != 'true'
+      run: echo "Must upload or test impacted targets" && exit 1
+      shell: bash
+
     - name: Detect changed paths
       id: detect-changed-paths
       if: ${{ inputs.impact-all-filters-path != '' }}
@@ -85,7 +100,23 @@ runs:
         BAZEL_STARTUP_OPTIONS: ${{ inputs.bazel-startup-options }}
 
     - name: Upload Impacted Targets
+      if: inputs.upload-targets == 'true'
       run: ${GITHUB_ACTION_PATH}/src/scripts/upload_impacted_targets.sh
+      shell: bash
+      env:
+        ACTOR: ${{ github.actor }}
+        API_TOKEN: ${{ inputs.trunk-token }}
+        REPOSITORY: ${{ github.repository }}
+        TARGET_BRANCH: ${{ steps.prerequisites.outputs.merge_instance_branch }}
+        PR_NUMBER: ${{ github.event.pull_request.number }}
+        PR_SHA: ${{ steps.prerequisites.outputs.pr_branch_head_sha }}
+        IMPACTED_TARGETS_FILE: ${{ steps.compute-impacted-targets.outputs.impacted_targets_out }}
+        IMPACTS_ALL_DETECTED: ${{ steps.prerequisites.outputs.impacts_all_detected }}
+
+    - name: Test Impacted Targets
+      if: inputs.test-targets == 'true'
+      # TODO(Tyler): Add test script
+      run: echo "Run tests"
       shell: bash
       env:
         ACTOR: ${{ github.actor }}
