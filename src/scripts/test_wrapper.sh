@@ -16,7 +16,7 @@ fi
 TARGET_BRANCH=main
 BAZEL_PATH=/home/tyler/repos/trunk/.trunk/tools/bazel
 CACHE_DIR="${HOME}/.cache/trunk/bazel-diff"
-VERBOSE=1
+# VERBOSE=1 # TODO: REMOVE
 
 #################
 ##### Utils #####
@@ -91,8 +91,13 @@ echo "RUNNING COMPUTE TARGETS" # TODO: REMOVE
 echo "DONE WITH COMPUTE TARGETS" # TODO: REMOVE
 
 IMPACTED_TARGETS_FILE=$(awk -F "=" '$1=="impacted_targets_out" {print $2}' ${GITHUB_OUTPUT})
+BAZEL_KIND_FILTER=".+_library|.+_binary|.+_test"
+BAZEL_NEGATIVE_KIND_FILTER="generated file"
+BAZEL_NEGATIVE_SCOPE_FILTER="//external"
 
-########################
-##### Test targets #####
-########################
-# TODO: TYLER FIGURE OUT FILTERS AND SCOPES AND TAGS AND KINDS
+###################################
+##### Filter and Test targets #####
+###################################
+echo "RUNNING TESTING TARGETS" # TODO: REMOVE
+. ${scripts_dir}/test_impacted_targets.sh
+echo "DONE WITH TESTING TARGETS" # TODO: REMOVE

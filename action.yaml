@@ -44,6 +44,18 @@ inputs:
     description: Run bazel test on the computed targets. Recommended if running on PRs.
     required: false
     default: "true"
+  test-kind-filter:
+    description: Kind filter to apply to impacted targets
+    required: false
+    default: .+_library|.+_binary|.+_test
+  test-negative-kind-filter:
+    description: Negative kind filter to apply to impacted targets
+    required: false
+    default: generated file
+  test-negative-scope-filter:
+    description: Scope filter to apply to impacted targets
+    required: false
+    default: //external
 
 runs:
   using: composite
@@ -141,3 +153,7 @@ runs:
       env:
         IMPACTED_TARGETS_FILE:
           ${{ steps.compute-impacted-targets-test.outputs.impacted_targets_out }}
+        BAZEL_KIND_FILTER: ${{ inputs.test-kind-filter }}
+        BAZEL_NEGATIVE_KIND_FILTER: ${{ inputs.test-negative-kind-filter }}
+        BAZEL_NEGATIVE_SCOPE_FILTER: ${{ inputs.test-negative-scope-filter }}
+        CI: "true"

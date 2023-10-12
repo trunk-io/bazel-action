@@ -131,7 +131,7 @@ else
 fi
 
 # Generate Hashes for the Merge Instance/Upstream Branch + PR Branch
-if [[[ -e "${merge_instance_with_pr_branch_out}" ]]]; then
+if [[ -e ${merge_instance_with_pr_branch_out} ]]; then
 	logIfVerbose "Hashes for merge result already exist: ${merge_instance_branch_out}..."
 else
 	logIfVerbose "Hashes for merge result don't exist in cache, merging and computing..."
