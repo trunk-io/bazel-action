@@ -86,9 +86,11 @@ BAZEL_DIFF_CMD=$(awk -F "=" '$1=="bazel_diff_cmd" {print $2}' output.txt)
 GITHUB_OUTPUT="impacted_targets.txt"
 rm -f ${GITHUB_OUTPUT}
 
+echo "RUNNING COMPUTE TARGETS" # TODO: REMOVE
 . ${scripts_dir}/compute_impacted_targets.sh
+echo "DONE WITH COMPUTE TARGETS" # TODO: REMOVE
 
-cat ${GITHUB_OUTPUT}
+# cat ${GITHUB_OUTPUT}
 
 ########################
 ##### Test targets #####

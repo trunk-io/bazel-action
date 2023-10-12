@@ -45,7 +45,7 @@ if [[ -n ${IMPACTS_FILTERS_CHANGES+x} ]]; then
 fi
 
 fetchRemoteGitHistory "${merge_instance_branch}"
-fetchRemoteGitHistory "${pr_branch}"
+fetchRemoteGitHistory "${pr_branch}" || true
 
 merge_instance_branch_head_sha=$(git rev-parse "origin/${merge_instance_branch}")
 
