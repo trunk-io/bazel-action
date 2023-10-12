@@ -72,13 +72,13 @@ echo "DONE WITH PREREQS" # TODO: REMOVE
 cat ${GITHUB_OUTPUT} # TODO: REMOVE
 
 # TODO: TYLER AUDIT IF MORE VARS ARE NEEDED
-# MERGE_INSTANCE_BRANCH=$(awk -F "=" '$1=="merge_instance_branch" {print $2}' output.txt)
-MERGE_INSTANCE_BRANCH_HEAD_SHA=$(awk -F "=" '$1=="merge_instance_branch_head_sha" {print $2}' output.txt)
-MERGE_BASE_SHA=$(awk -F "=" '$1=="merge_base_sha" {print $2}' output.txt)
-# PR_BRANCH=$(awk -F "=" '$1=="pr_branch" {print $2}' output.txt)
-PR_BRANCH_HEAD_SHA=$(awk -F "=" '$1=="pr_branch_head_sha" {print $2}' output.txt)
-WORKSPACE_PATH=$(awk -F "=" '$1=="workspace_path" {print $2}' output.txt)
-BAZEL_DIFF_CMD=$(awk -F "=" '$1=="bazel_diff_cmd" {print $2}' output.txt)
+# MERGE_INSTANCE_BRANCH=$(awk -F "=" '$1=="merge_instance_branch" {print $2}' ${GITHUB_OUTPUT})
+MERGE_INSTANCE_BRANCH_HEAD_SHA=$(awk -F "=" '$1=="merge_instance_branch_head_sha" {print $2}' ${GITHUB_OUTPUT})
+MERGE_BASE_SHA=$(awk -F "=" '$1=="merge_base_sha" {print $2}' ${GITHUB_OUTPUT})
+# PR_BRANCH=$(awk -F "=" '$1=="pr_branch" {print $2}' ${GITHUB_OUTPUT})
+PR_BRANCH_HEAD_SHA=$(awk -F "=" '$1=="pr_branch_head_sha" {print $2}' ${GITHUB_OUTPUT})
+WORKSPACE_PATH=$(awk -F "=" '$1=="workspace_path" {print $2}' ${GITHUB_OUTPUT})
+BAZEL_DIFF_CMD=$(awk -F "=" '$1=="bazel_diff_cmd" {print $2}' ${GITHUB_OUTPUT})
 
 ################################
 ##### Call compute targets #####
@@ -90,7 +90,7 @@ echo "RUNNING COMPUTE TARGETS" # TODO: REMOVE
 . ${scripts_dir}/compute_impacted_targets.sh
 echo "DONE WITH COMPUTE TARGETS" # TODO: REMOVE
 
-# cat ${GITHUB_OUTPUT}
+IMPACTED_TARGETS_FILE=$(awk -F "=" '$1=="impacted_targets_out" {print $2}' ${GITHUB_OUTPUT})
 
 ########################
 ##### Test targets #####
