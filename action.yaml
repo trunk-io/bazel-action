@@ -147,8 +147,8 @@ runs:
 
     - name: Test Impacted Targets
       if: inputs.test-targets == 'true'
-      # TODO(Tyler): Add test script
-      run: echo "Run tests"
+      id: test-impacted-targets
+      run: ${GITHUB_ACTION_PATH}/src/scripts/test_impacted_targets.sh
       shell: bash
       env:
         IMPACTED_TARGETS_FILE:
