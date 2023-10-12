@@ -22,7 +22,7 @@ if [[ -z ${merge_instance_branch} ]]; then
 fi
 
 # trunk-ignore(shellcheck/SC2153): Passed in as env variable
-workspace_path="${WORKSPACE_PATH}"
+workspace_path="${WORKSPACE_PATH-}"
 if [[ -z ${workspace_path} ]]; then
 	workspace_path=$(pwd)
 fi
@@ -47,20 +47,40 @@ fi
 fetchRemoteGitHistory "${merge_instance_branch}"
 fetchRemoteGitHistory "${pr_branch}"
 
-git switch "${merge_instance_branch}"
-merge_instance_branch_head_sha=$(git rev-parse "${merge_instance_branch}")
+merge_instance_branch_head_sha=$(git rev-parse "origin/${merge_instance_branch}")
 
-git switch "${pr_branch}"
 pr_branch_head_sha=$(git rev-parse "${pr_branch}")
 
+# When testing, we use the merge-base rather than the HEAD of the target branch
+merge_base_sha=$(git merge-base HEAD "${merge_instance_branch_head_sha}")
+
 echo "Identified changes: " "${impacts_all_detected}"
+
+# Setup bazel-diff if necessary
+if command -v bazel-diff; then
+	_bazel_diff="bazel-diff"
+else
+	# trunk-ignore(shellcheck)
+	alias _java=$(_bazel info java-home)/bin/java
+
+	# Install the bazel-diff JAR. Avoid cloning the repo, as there will be conflicting WORKSPACES.
+	curl --retry 5 -Lo bazel-diff.jar https://github.com/Tinder/bazel-diff/releases/latest/download/bazel-diff_deploy.jar
+	_java -jar bazel-diff.jar -V
+	_bazel version # Does not require running with startup options.
+
+	_bazel_diff="_java -jar bazel-diff.jar"
+fi
+
+# TODO(Tyler): Refactor this to use https://github.com/trunk-io/trunk/pull/8444/files
 
 # Outputs
 # trunk-ignore(shellcheck/SC2129)
 echo "merge_instance_branch=${merge_instance_branch}" >>"${GITHUB_OUTPUT}"
 echo "merge_instance_branch_head_sha=${merge_instance_branch_head_sha}" >>"${GITHUB_OUTPUT}"
+echo "merge_base_sha=${merge_base_sha}" >>"${GITHUB_OUTPUT}"
 echo "pr_branch=${pr_branch}" >>"${GITHUB_OUTPUT}"
 echo "pr_branch_head_sha=${pr_branch_head_sha}" >>"${GITHUB_OUTPUT}"
 echo "impacts_all_detected=${impacts_all_detected}" >>"${GITHUB_OUTPUT}"
 echo "workspace_path=${workspace_path}" >>"${GITHUB_OUTPUT}"
 echo "requires_default_bazel_installation=${requires_default_bazel_installation}" >>"${GITHUB_OUTPUT}"
+echo "bazel_diff_cmd=${_bazel_diff}" >>"${GITHUB_OUTPUT}"
