@@ -59,22 +59,21 @@ echo "Identified changes: " "${impacts_all_detected}"
 if command -v bazel-diff; then
 	_bazel_diff="bazel-diff"
 else
-	# trunk-ignore(shellcheck)
-	alias _java=$(_bazel info java-home)/bin/java
+	_java=$(_bazel info java-home)/bin/java
 
 	# Install the bazel-diff JAR. Avoid cloning the repo, as there will be conflicting WORKSPACES.
 	curl --retry 5 -Lo bazel-diff.jar https://github.com/Tinder/bazel-diff/releases/latest/download/bazel-diff_deploy.jar
 	_java -jar bazel-diff.jar -V
 	_bazel version # Does not require running with startup options.
 
-	_bazel_diff="_java -jar bazel-diff.jar"
+	_bazel_diff="${_java} -jar bazel-diff.jar"
 fi
 
 # TODO(Tyler): Refactor this to use https://github.com/trunk-io/trunk/pull/8444/files
 
 # Outputs
-# trunk-ignore(shellcheck/SC2129)
 if [[ -v GITHUB_OUTPUT && -f ${GITHUB_OUTPUT} ]]; then
+	# trunk-ignore-begin(shellcheck/SC2129)
 	echo "merge_instance_branch=${merge_instance_branch}" >>"${GITHUB_OUTPUT}"
 	echo "merge_instance_branch_head_sha=${merge_instance_branch_head_sha}" >>"${GITHUB_OUTPUT}"
 	echo "merge_base_sha=${merge_base_sha}" >>"${GITHUB_OUTPUT}"
@@ -84,6 +83,7 @@ if [[ -v GITHUB_OUTPUT && -f ${GITHUB_OUTPUT} ]]; then
 	echo "workspace_path=${workspace_path}" >>"${GITHUB_OUTPUT}"
 	echo "requires_default_bazel_installation=${requires_default_bazel_installation}" >>"${GITHUB_OUTPUT}"
 	echo "bazel_diff_cmd=${_bazel_diff}" >>"${GITHUB_OUTPUT}"
+	# trunk-ignore-end(shellcheck/SC2129)
 else
 	echo "::set-output name=merge_instance_branch::${merge_instance_branch}"
 	echo "::set-output name=merge_instance_branch_head_sha::${merge_instance_branch_head_sha}"

@@ -84,7 +84,7 @@ trap 'cleanup' EXIT
 generate_hashes() {
 	_bazel_diff generate-hashes \
 		--bazelPath "${BAZEL_PATH}" \
-		-so=${bazel_startup_options} \
+		-so="${bazel_startup_options}" \
 		--workspacePath "${WORKSPACE_PATH}" \
 		--bazelCommandOptions "--noshow_progress" \
 		"$1"
