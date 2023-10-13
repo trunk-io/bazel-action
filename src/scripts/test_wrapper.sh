@@ -81,10 +81,8 @@ echo "DONE WITH PREREQS" # TODO: REMOVE
 
 cat ${GITHUB_OUTPUT} # TODO: REMOVE
 
-# TODO: TYLER AUDIT IF MORE VARS ARE NEEDED
 # Use merge base sha instead of merge head sha to calculate the correct diff for testing.
 MERGE_INSTANCE_BRANCH_HEAD_SHA=$(awk -F "=" '$1=="merge_base_sha" {print $2}' ${GITHUB_OUTPUT})
-# MERGE_INSTANCE_BRANCH=$(awk -F "=" '$1=="merge_instance_branch" {print $2}' ${GITHUB_OUTPUT})
 PR_BRANCH=$(awk -F "=" '$1=="pr_branch" {print $2}' ${GITHUB_OUTPUT})
 PR_BRANCH_HEAD_SHA=$(awk -F "=" '$1=="pr_branch_head_sha" {print $2}' ${GITHUB_OUTPUT})
 WORKSPACE_PATH=$(awk -F "=" '$1=="workspace_path" {print $2}' ${GITHUB_OUTPUT})

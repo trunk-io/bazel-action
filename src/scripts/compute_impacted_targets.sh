@@ -112,7 +112,6 @@ if [[ -n ${VERBOSE-} ]]; then
 	pr_depth=$(git rev-list "${merge_base_sha}".."${PR_BRANCH_HEAD_SHA}" | wc -l)
 	echo "PR Depth= ${pr_depth}"
 
-	# TODO: TYLER USE BRANCH CORRECTLY HERE
 	git checkout -q "${original_branch}"
 	git log -n "${pr_depth}" --oneline | cat
 fi
