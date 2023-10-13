@@ -116,6 +116,7 @@ runs:
       if: inputs.upload-targets == 'true'
       run: ${GITHUB_ACTION_PATH}/src/scripts/upload_impacted_targets.sh
       shell: bash
+      continue-on-error: true
       env:
         ACTOR: ${{ github.actor }}
         API_TOKEN: ${{ inputs.trunk-token }}
