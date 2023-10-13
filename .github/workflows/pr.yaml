@@ -1,6 +1,8 @@
 name: Pull Request
 on: pull_request
 
+permissions: read-all
+
 jobs:
   tests:
     runs-on: ubuntu-latest
@@ -10,7 +12,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Install pnpm
-        uses: pnpm/action-setup@v2
+        uses: pnpm/action-setup@d882d12c64e032187b2edb46d3a0d003b7a43598
         with:
           version: 8.6.7
 
