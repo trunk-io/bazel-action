@@ -21,7 +21,6 @@ if [[ -z ${merge_instance_branch} ]]; then
 	exit 2
 fi
 
-# trunk-ignore(shellcheck/SC2153): Passed in as env variable
 workspace_path="${WORKSPACE_PATH-}"
 if [[ -z ${workspace_path} ]]; then
 	workspace_path=$(pwd)

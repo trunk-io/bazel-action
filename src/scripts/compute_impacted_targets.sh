@@ -6,9 +6,19 @@ shopt -s expand_aliases
 ##################################
 ##### Validate required vars #####
 ##################################
+if [[ -z ${PR_BRANCH} ]]; then
+	echo "Missing branch"
+	exit 2
+fi
+
 if [[ (-z ${MERGE_INSTANCE_BRANCH_HEAD_SHA}) || (-z ${PR_BRANCH_HEAD_SHA}) ]]; then
 	echo "Missing sha"
 	exit 2
+fi
+
+original_branch="${PR_BRANCH}"
+if [[ ${original_branch} == "HEAD" ]]; then
+	original_branch="${PR_BRANCH_HEAD_SHA}"
 fi
 
 if [[ -z ${WORKSPACE_PATH} ]]; then
@@ -102,7 +112,8 @@ if [[ -n ${VERBOSE-} ]]; then
 	pr_depth=$(git rev-list "${merge_base_sha}".."${PR_BRANCH_HEAD_SHA}" | wc -l)
 	echo "PR Depth= ${pr_depth}"
 
-	git checkout -q "${PR_BRANCH_HEAD_SHA}"
+	# TODO: TYLER USE BRANCH CORRECTLY HERE
+	git checkout -q "${original_branch}"
 	git log -n "${pr_depth}" --oneline | cat
 fi
 
@@ -135,12 +146,12 @@ if [[ -e ${merge_instance_with_pr_branch_out} ]]; then
 	logIfVerbose "Hashes for merge result already exist: ${merge_instance_branch_out}..."
 else
 	logIfVerbose "Hashes for merge result don't exist in cache, merging and computing..."
-	git -c "user.name=Trunk Actions" -c "user.email=actions@trunk.io" merge --squash "${PR_BRANCH_HEAD_SHA}"
+	git -c "user.name=Trunk Actions" -c "user.email=actions@trunk.io" merge --squash "${original_branch}"
 	generate_hashes "${merge_instance_with_pr_branch_out}"
 fi
 
 # Reset back to the original branch
-git checkout -q "${PR_BRANCH_HEAD_SHA}"
+git checkout -q "${original_branch}"
 
 # Compute impacted targets
 _bazel_diff get-impacted-targets --startingHashes="${merge_instance_branch_out}" --finalHashes="${merge_instance_with_pr_branch_out}" --output="${impacted_targets_out}"

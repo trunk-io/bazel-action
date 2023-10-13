@@ -53,7 +53,7 @@ jobs:
 
 ### Tests
 
-```
+```bash
 pnpm install
 pnpm test
 ```
