@@ -64,6 +64,11 @@ An impacted target is a unit that is affected by a particular PR. For example, a
 `src/backend/app` will impact the Bazel `src/backend` package. Any two pull requests that share an
 impacted target must be tested together; otherwise, they can be tested independently.
 
+The impacted targets for uploading to MergeGraph and for testing may necessarily be different. When
+running tests on pull requests, the diff must be calculated between the PR branch and the merge-base
+of HEAD and the target. However, when uploading targets, the target's HEAD must be used in order to
+keep up to date with what has merged.
+
 We currently support Bazel; other solutions, such as Buck, Nx, etc. are on the way! You may also
 define your own suite of impacted targets using glob-based targets.
 
