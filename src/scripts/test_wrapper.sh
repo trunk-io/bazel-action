@@ -7,6 +7,7 @@ set -euo pipefail
 ##################################################
 ##### Handle Command Line Flags and Defaults #####
 ##################################################
+tempdir=$(mktemp -d)
 scripts_dir=$(dirname "${BASH_SOURCE[0]}")
 
 PR_BRANCH=$(git branch --show-current)
@@ -35,9 +36,17 @@ try_reset() {
 	fi
 }
 
+try_rm_tempdir() {
+	if [[ -n ${tempdir+x} ]]; then
+		rm -rf "${tempdir}"
+		unset tempdir
+	fi
+}
+
 cleanup() {
 	try_checkout_head
 	try_reset
+	try_rm_tempdir
 }
 
 trap 'cleanup' EXIT
@@ -62,8 +71,9 @@ fi
 ##############################
 ##### Call prerequisites #####
 ##############################
-GITHUB_OUTPUT="output.txt"
-rm -f ${GITHUB_OUTPUT}
+GITHUB_OUTPUT="${tempdir}/bazel_action_prerequisites.txt"
+rm -f "${GITHUB_OUTPUT}"
+touch "${GITHUB_OUTPUT}"
 
 echo "RUNNING PREREQS" # TODO: REMOVE
 . ${scripts_dir}/prerequisites.sh
@@ -83,8 +93,9 @@ BAZEL_DIFF_CMD=$(awk -F "=" '$1=="bazel_diff_cmd" {print $2}' ${GITHUB_OUTPUT})
 ################################
 ##### Call compute targets #####
 ################################
-GITHUB_OUTPUT="impacted_targets.txt"
-rm -f ${GITHUB_OUTPUT}
+GITHUB_OUTPUT="${tempdir}/bazel_action_compute.txt"
+rm -f "${GITHUB_OUTPUT}"
+touch "${GITHUB_OUTPUT}"
 
 echo "RUNNING COMPUTE TARGETS" # TODO: REMOVE
 . ${scripts_dir}/compute_impacted_targets.sh

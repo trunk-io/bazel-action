@@ -74,12 +74,24 @@ fi
 
 # Outputs
 # trunk-ignore(shellcheck/SC2129)
-echo "merge_instance_branch=${merge_instance_branch}" >>"${GITHUB_OUTPUT}"
-echo "merge_instance_branch_head_sha=${merge_instance_branch_head_sha}" >>"${GITHUB_OUTPUT}"
-echo "merge_base_sha=${merge_base_sha}" >>"${GITHUB_OUTPUT}"
-echo "pr_branch=${pr_branch}" >>"${GITHUB_OUTPUT}"
-echo "pr_branch_head_sha=${pr_branch_head_sha}" >>"${GITHUB_OUTPUT}"
-echo "impacts_all_detected=${impacts_all_detected}" >>"${GITHUB_OUTPUT}"
-echo "workspace_path=${workspace_path}" >>"${GITHUB_OUTPUT}"
-echo "requires_default_bazel_installation=${requires_default_bazel_installation}" >>"${GITHUB_OUTPUT}"
-echo "bazel_diff_cmd=${_bazel_diff}" >>"${GITHUB_OUTPUT}"
+if [[ -v GITHUB_OUTPUT && -f ${GITHUB_OUTPUT} ]]; then
+	echo "merge_instance_branch=${merge_instance_branch}" >>"${GITHUB_OUTPUT}"
+	echo "merge_instance_branch_head_sha=${merge_instance_branch_head_sha}" >>"${GITHUB_OUTPUT}"
+	echo "merge_base_sha=${merge_base_sha}" >>"${GITHUB_OUTPUT}"
+	echo "pr_branch=${pr_branch}" >>"${GITHUB_OUTPUT}"
+	echo "pr_branch_head_sha=${pr_branch_head_sha}" >>"${GITHUB_OUTPUT}"
+	echo "impacts_all_detected=${impacts_all_detected}" >>"${GITHUB_OUTPUT}"
+	echo "workspace_path=${workspace_path}" >>"${GITHUB_OUTPUT}"
+	echo "requires_default_bazel_installation=${requires_default_bazel_installation}" >>"${GITHUB_OUTPUT}"
+	echo "bazel_diff_cmd=${_bazel_diff}" >>"${GITHUB_OUTPUT}"
+else
+	echo "::set-output name=merge_instance_branch::${merge_instance_branch}"
+	echo "::set-output name=merge_instance_branch_head_sha::${merge_instance_branch_head_sha}"
+	echo "::set-output name=merge_base_sha::${merge_base_sha}"
+	echo "::set-output name=pr_branch::${pr_branch}"
+	echo "::set-output name=pr_branch_head_sha::${pr_branch_head_sha}"
+	echo "::set-output name=impacts_all_detected::${impacts_all_detected}"
+	echo "::set-output name=workspace_path::${workspace_path}"
+	echo "::set-output name=requires_default_bazel_installation::${requires_default_bazel_installation}"
+	echo "::set-output name=bazel_diff_cmd::${_bazel_diff}"
+fi

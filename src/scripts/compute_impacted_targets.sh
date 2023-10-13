@@ -160,4 +160,8 @@ num_impacted_targets=$(wc -l <"${impacted_targets_out}")
 echo "Computed ${num_impacted_targets} targets for sha ${PR_BRANCH_HEAD_SHA}"
 
 # Outputs
-echo "impacted_targets_out=${impacted_targets_out}" >>"${GITHUB_OUTPUT}"
+if [[ -v GITHUB_OUTPUT && -f ${GITHUB_OUTPUT} ]]; then
+	echo "impacted_targets_out=${impacted_targets_out}" >>"${GITHUB_OUTPUT}"
+else
+	echo "::set-output name=impacted_targets_out::${impacted_targets_out}"
+fi
