@@ -1,0 +1,119 @@
+name: Pull Request
+on: pull_request
+
+permissions: read-all
+
+jobs:
+  tests_impacted_targets:
+    runs-on: ubuntu-latest
+    name: ${{ matrix.test-name }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # 1. Test when some targets are modified
+          - test-name: basic-modified
+            target-branch:
+            setup-branch:
+            bazel-startup-options: ""
+            impact-all-filters-path: ""
+            expected-targets-file:
+            upload-targets: "false"
+
+          # 2. Test when some targets are modified and startup options are specified
+          - test-name: basic-upload-startup
+            target-branch:
+            setup-branch:
+            bazel-startup-options: --host_jvm_args=-Xmx12G,--block_for_lock,--client_debug
+            impact-all-filters-path: ""
+            expected-targets-file:
+            upload-targets: "true"
+
+          # 3. Test when some targets are modified and impact-all-filters-path is specified
+          - test-name: basic-upload-impacts-all
+            target-branch:
+            setup-branch:
+            bazel-startup-options: ""
+            impact-all-filters-path:
+            expected-targets-file:
+            upload-targets: "true"
+
+          # 4. Test when some targets are added
+          - test-name: basic-added
+            target-branch:
+            setup-branch:
+            bazel-startup-options: ""
+            impact-all-filters-path: ""
+            expected-targets-file:
+            upload-targets: "false"
+
+          # 5. Test when some targets are removed
+          - test-name: basic-removed
+            target-branch:
+            setup-branch:
+            bazel-startup-options: ""
+            impact-all-filters-path: ""
+            expected-targets-file:
+            upload-targets: "false"
+
+          # 6. Test when some targets are added but the target branch is out of date (this is where upload and test diffs vary)
+          - test-name: outdated-added
+            target-branch:
+            setup-branch:
+            bazel-startup-options: ""
+            impact-all-filters-path: ""
+            expected-targets-file:
+            upload-targets: "false"
+
+          # 7. Test a stress test of targets
+          - test-name: many-mixed
+            target-branch:
+            setup-branch:
+            bazel-startup-options: ""
+            impact-all-filters-path: ""
+            expected-targets-file:
+            upload-targets: "false"
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ matrix.setup-branch }}
+          fetch-depth: 0
+
+      # Check out this repo separately in order to use its action independent of the state of the test inputs
+      - name: Checkout ${{ github.repository }}
+        uses: actions/checkout@v3
+        with:
+          path: local-action
+
+      # We will override bazel for purposes of asserting that tests are run, but we still need to invoke it and have it in the PATH for computing targets
+      - name: Setup Bazel
+        # trunk-ignore(semgrep): Trust third-party `bazelbuild` GH Action
+        uses: bazelbuild/setup-bazelisk@v2
+
+      - name: Test impacted targets
+        id: test
+        uses: ./local-action/
+        with:
+          trunk-token: test-token
+          target-branch: ${{ matrix.target-branch }}
+          bazel-workspace-path: ./tests/simple_bazel_workspace
+          verbose: "true"
+          bazel-startup-options: ${{ matrix.bazel-startup-options }}
+          bazel-path: ${{ github.workspace }}/local-action/tests/bazel_stub.sh
+          impact-all-filters-path: ${{ matrix.impact-all-filters-path }}
+          upload-targets: ${{ matrix.upload-targets }}
+          test-targets: "true"
+        env:
+          TEST_TARGETS_EXPECTED_FILE: ${{ matrix.expected-targets-file }}
+          API_URL: localhost
+
+      - name: Assert number targets
+        shell: bash
+        run:
+          expected_targets=$(wc -l ${{ matrix.expected-targets-file }}) if [[ "${{
+          steps.test.outputs.detected_test_targets }}" -ne "${expected_targets}" ]]; then echo
+          "Incorrect number of tests run, expected ${expected_targets}, got ${{
+          steps.test.outputs.detected_test_targets }}" exit 1 fi echo "Tests identified
+          successfully"
