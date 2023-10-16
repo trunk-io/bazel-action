@@ -69,8 +69,6 @@ else
 	_bazel_diff="${_java} -jar bazel-diff.jar"
 fi
 
-# TODO(Tyler): Refactor this to use https://github.com/trunk-io/trunk/pull/8444/files
-
 # Outputs
 if [[ -v GITHUB_OUTPUT && -f ${GITHUB_OUTPUT} ]]; then
 	# trunk-ignore-begin(shellcheck/SC2129)

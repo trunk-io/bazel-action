@@ -17,7 +17,6 @@ fi
 TARGET_BRANCH=main
 BAZEL_PATH=/home/tyler/repos/trunk/.trunk/tools/bazel
 CACHE_DIR="${HOME}/.cache/trunk/bazel-diff"
-# VERBOSE=1 # TODO: REMOVE
 
 #################
 ##### Utils #####
@@ -80,8 +79,6 @@ touch "${GITHUB_OUTPUT}"
 echo "RUNNING PREREQS" # TODO: REMOVE
 . "${scripts_dir}/prerequisites.sh"
 echo "DONE WITH PREREQS" # TODO: REMOVE
-
-cat "${GITHUB_OUTPUT}" # TODO: REMOVE
 
 # Use merge base sha instead of merge head sha to calculate the correct diff for testing.
 MERGE_INSTANCE_BRANCH_HEAD_SHA=$(awk -F "=" '$1=="merge_base_sha" {print $2}' "${GITHUB_OUTPUT}")
