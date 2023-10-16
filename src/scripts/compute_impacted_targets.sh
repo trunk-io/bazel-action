@@ -82,14 +82,12 @@ cleanup() {
 trap 'cleanup' EXIT
 
 generate_hashes() {
-	echo "generating hashes 1"
 	_bazel_diff generate-hashes \
 		--bazelPath "${BAZEL_PATH}" \
 		-so="${bazel_startup_options}" \
 		--workspacePath "${WORKSPACE_PATH}" \
 		--bazelCommandOptions "--noshow_progress" \
 		"$1"
-	echo "generating hashes 1 done"
 }
 
 cache_dir=${CACHE_DIR:-.}
