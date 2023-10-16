@@ -75,17 +75,17 @@ jobs:
             upload-targets: "false"
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-        with:
-          ref: ${{ matrix.setup-branch }}
-          fetch-depth: 0
-
       # Check out this repo separately in order to use its action independent of the state of the test inputs
       - name: Checkout ${{ github.repository }}
         uses: actions/checkout@v3
         with:
           path: local-action
+
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ matrix.setup-branch }}
+          fetch-depth: 0
 
       # We will override bazel for purposes of asserting that tests are run, but we still need to invoke it and have it in the PATH for computing targets
       - name: Setup Bazel
