@@ -1,4 +1,4 @@
 filegroup(
-    name = "lib",
+    name = "lib2",
     srcs = ["foo.txt"],
 )
