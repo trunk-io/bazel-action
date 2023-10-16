@@ -59,12 +59,12 @@ echo "Identified changes: " "${impacts_all_detected}"
 if command -v bazel-diff; then
 	_bazel_diff="bazel-diff"
 else
-	_java=$(_bazel info java-home)/bin/java
+	_java=$(bazel info java-home)/bin/java
 
 	# Install the bazel-diff JAR. Avoid cloning the repo, as there will be conflicting WORKSPACES.
 	curl --retry 5 -Lo bazel-diff.jar https://github.com/Tinder/bazel-diff/releases/latest/download/bazel-diff_deploy.jar
 	"${_java}" -jar bazel-diff.jar -V
-	_bazel version # Does not require running with startup options.
+	bazel version # Does not require running with startup options.
 
 	_bazel_diff="${_java} -jar bazel-diff.jar"
 fi
