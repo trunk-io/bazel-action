@@ -74,6 +74,15 @@ runs:
       with:
         filters: ${{ inputs.impact-all-filters-path }}
 
+    - name: Setup jq
+      # trunk-ignore(semgrep): Trust third-party action to install JQ. Source code: https://github.com/dcarbone/install-jq-action/
+      uses: dcarbone/install-jq-action@v1.0.1
+
+    - name: Install Bazel in PATH
+      if: ${{ steps.prerequisites.outputs.requires_default_bazel_installation == 'true' }}
+      # trunk-ignore(semgrep): Trust third-party `bazelbuild` GH Action
+      uses: bazelbuild/setup-bazelisk@v2
+
     - name: Prerequisites
       id: prerequisites
       run: ${GITHUB_ACTION_PATH}/src/scripts/prerequisites.sh
@@ -85,15 +94,6 @@ runs:
         WORKSPACE_PATH: ${{ inputs.bazel-workspace-path }}
         BAZEL_PATH: ${{ inputs.bazel-path }}
         IMPACTS_FILTERS_CHANGES: ${{ steps.detect-changed-paths.outputs.changes }}
-
-    - name: Setup jq
-      # trunk-ignore(semgrep): Trust third-party action to install JQ. Source code: https://github.com/dcarbone/install-jq-action/
-      uses: dcarbone/install-jq-action@v1.0.1
-
-    - name: Install Bazel in PATH
-      if: ${{ steps.prerequisites.outputs.requires_default_bazel_installation == 'true' }}
-      # trunk-ignore(semgrep): Trust third-party `bazelbuild` GH Action
-      uses: bazelbuild/setup-bazelisk@v2
 
     - name: Compute Impacted Targets for Uploading
       id: compute-impacted-targets-upload
@@ -116,6 +116,7 @@ runs:
       if: inputs.upload-targets == 'true'
       run: ${GITHUB_ACTION_PATH}/src/scripts/upload_impacted_targets.sh
       shell: bash
+      continue-on-error: true
       env:
         ACTOR: ${{ github.actor }}
         API_TOKEN: ${{ inputs.trunk-token }}

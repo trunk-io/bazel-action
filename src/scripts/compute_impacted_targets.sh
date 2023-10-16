@@ -84,7 +84,7 @@ trap 'cleanup' EXIT
 generate_hashes() {
 	_bazel_diff generate-hashes \
 		--bazelPath "${BAZEL_PATH}" \
-		-so=${bazel_startup_options} \
+		-so="${bazel_startup_options}" \
 		--workspacePath "${WORKSPACE_PATH}" \
 		--bazelCommandOptions "--noshow_progress" \
 		"$1"
@@ -112,7 +112,6 @@ if [[ -n ${VERBOSE-} ]]; then
 	pr_depth=$(git rev-list "${merge_base_sha}".."${PR_BRANCH_HEAD_SHA}" | wc -l)
 	echo "PR Depth= ${pr_depth}"
 
-	# TODO: TYLER USE BRANCH CORRECTLY HERE
 	git checkout -q "${original_branch}"
 	git log -n "${pr_depth}" --oneline | cat
 fi
@@ -160,4 +159,8 @@ num_impacted_targets=$(wc -l <"${impacted_targets_out}")
 echo "Computed ${num_impacted_targets} targets for sha ${PR_BRANCH_HEAD_SHA}"
 
 # Outputs
-echo "impacted_targets_out=${impacted_targets_out}" >>"${GITHUB_OUTPUT}"
+if [[ -v GITHUB_OUTPUT && -f ${GITHUB_OUTPUT} ]]; then
+	echo "impacted_targets_out=${impacted_targets_out}" >>"${GITHUB_OUTPUT}"
+else
+	echo "::set-output name=impacted_targets_out::${impacted_targets_out}"
+fi
