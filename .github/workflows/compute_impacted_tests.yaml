@@ -38,7 +38,7 @@ jobs:
           PR_BRANCH_HEAD_SHA: 3e8b2a57e0f3ad7b63cc487eae576c25b84b653b
           VERBOSE: 1
           WORKSPACE_PATH: ./tests/simple_bazel_workspace
-          # BAZEL_STARTUP_OPTIONS: --host_jvm_args=-Xmx12G,--block_for_lock,--client_debug
+          BAZEL_STARTUP_OPTIONS: --host_jvm_args=-Xmx12G,--block_for_lock,--client_debug
           BAZEL_PATH: bazel
           BAZEL_DIFF_CMD: ${{ steps.bazel-diff.outputs.bazel_diff_cmd }}
 
