@@ -1,5 +1,4 @@
 filegroup(
     name = "lib",
     srcs = ["foo.txt"],
-    deps = ["//lib2"],
 )
