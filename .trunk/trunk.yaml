@@ -19,3 +19,4 @@ lint:
   ignore:
     - linters: [buildifier]
       paths: [tests/simple_bazel_workspace/**]
+# A useful comment
