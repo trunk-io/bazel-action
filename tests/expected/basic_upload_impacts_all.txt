@@ -1,0 +1,2 @@
+//lib:foo.txt
+//lib:lib

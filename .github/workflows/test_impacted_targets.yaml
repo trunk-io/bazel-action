@@ -27,6 +27,7 @@ jobs:
             bazel-startup-options: --host_jvm_args=-Xmx12G,--block_for_lock,--client_debug
             impact-all-filters-path: ""
             expected-targets-file: basic_upload_startup.txt
+            # The upload is expected to fail with exit code 7
             upload-targets: "true"
 
           # 3. Test when some targets are modified and impact-all-filters-path is specified
@@ -34,8 +35,9 @@ jobs:
             target-branch: do_not_delete/basic-target
             setup-branch: do_not_delete/basic-setup-upload
             bazel-startup-options: ""
-            impact-all-filters-path: .trunk/impact_all_filters.yaml
+            impact-all-filters-path: local-action/.trunk/impact_all_filters.yaml
             expected-targets-file: basic_upload_impacts_all.txt
+            # The upload is expected to fail with exit code 7
             upload-targets: "true"
 
           # 4. Test when some targets are added

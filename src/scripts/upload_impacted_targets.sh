@@ -27,8 +27,6 @@ if [[ -z ${API_URL+x} ]]; then
 	API_URL="https://api.trunk.io:443/v1/setImpactedTargets"
 fi
 
-echo "Pre repo body" # TODO: REMOVE
-
 REPO_BODY=$(
 	jq --null-input \
 		--arg host "github.com" \
@@ -37,8 +35,6 @@ REPO_BODY=$(
 		'{ "host": $host, "owner": $owner, "name": $name }'
 )
 
-echo "Pre PR body" # TODO: REMOVE
-
 PR_BODY=$(
 	jq --null-input \
 		--arg number "${PR_NUMBER}" \
@@ -46,12 +42,9 @@ PR_BODY=$(
 		'{ "number": $number, "sha": $sha }'
 )
 
-echo "Pre POST body" # TODO: REMOVE
-
 num_impacted_targets=""
 POST_BODY="./post_body_tmp"
 if [[ ${IMPACTS_ALL_DETECTED} == 'true' ]]; then
-	echo "IMPACTS ALL CASE" # TODO: REMOVE
 	jq --null-input \
 		--argjson repo "${REPO_BODY}" \
 		--argjson pr "${PR_BODY}" \
@@ -62,7 +55,6 @@ if [[ ${IMPACTS_ALL_DETECTED} == 'true' ]]; then
 
 	num_impacted_targets="'ALL'"
 else
-	echo "IMPACTS SOME CASE" # TODO: REMOVE
 	# Reformat the impacted targets into JSON array and pipe into a new file.
 	IMPACTED_TARGETS_JSON_TMP="./impacted_targets_json_tmp"
 	touch "${IMPACTED_TARGETS_JSON_TMP}"
@@ -85,7 +77,6 @@ else
 	num_impacted_targets=$(wc -l <"${IMPACTED_TARGETS_FILE}")
 fi
 
-echo "pre Status code" # TODO: REMOVE
 HTTP_STATUS_CODE=$(
 	curl -s -o /dev/null -w '%{http_code}' -X POST \
 		-H "Content-Type: application/json" -H "x-api-token:${API_TOKEN}" \
@@ -93,7 +84,6 @@ HTTP_STATUS_CODE=$(
 		"${API_URL}"
 )
 
-echo "pre exit code" # TODO: REMOVE
 EXIT_CODE=0
 COMMENT_TEXT=""
 if [[ ${HTTP_STATUS_CODE} == 200 ]]; then
