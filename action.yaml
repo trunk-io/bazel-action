@@ -158,6 +158,7 @@ runs:
         IMPACTED_TARGETS_FILE:
           ${{ steps.compute-impacted-targets-test.outputs.impacted_targets_out }}
         BAZEL_PATH: ${{ inputs.bazel-path }}
+        BAZEL_STARTUP_OPTIONS: ${{ inputs.bazel-startup-options }}
         BAZEL_KIND_FILTER: ${{ inputs.test-kind-filter }}
         BAZEL_NEGATIVE_KIND_FILTER: ${{ inputs.test-negative-kind-filter }}
         BAZEL_NEGATIVE_SCOPE_FILTER: ${{ inputs.test-negative-scope-filter }}

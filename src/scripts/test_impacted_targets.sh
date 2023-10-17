@@ -17,7 +17,7 @@ trap 'try_rm_tempdir' EXIT
 
 _bazel() {
 	# trunk-ignore(shellcheck)
-	${BAZEL_PATH} ${bazel_startup_options} "$@"
+	${BAZEL_PATH} ${BAZEL_STARTUP_OPTIONS} "$@"
 }
 
 ##########################
