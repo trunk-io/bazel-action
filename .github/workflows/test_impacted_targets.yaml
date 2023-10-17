@@ -98,7 +98,7 @@ jobs:
         with:
           trunk-token: test-token
           target-branch: ${{ matrix.target-branch }}
-          bazel-workspace-path: ./tests/simple_bazel_workspace
+          bazel-workspace-path: ${{ github.workspace }}/tests/simple_bazel_workspace
           verbose: "true"
           bazel-startup-options: ${{ matrix.bazel-startup-options }}
           bazel-path: ${{ github.workspace }}/local-action/tests/bazel_stub.sh
