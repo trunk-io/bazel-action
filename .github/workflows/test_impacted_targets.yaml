@@ -44,7 +44,7 @@ jobs:
             setup-branch: do_not_delete/basic-setup-added
             bazel-startup-options: ""
             impact-all-filters-path: ""
-            expected-targets-file: basic_setup_added.txt
+            expected-targets-file: basic_added.txt
             upload-targets: "false"
 
           # 5. Test when some targets are removed
