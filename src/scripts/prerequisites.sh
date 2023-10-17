@@ -26,6 +26,9 @@ if [[ -z ${workspace_path} ]]; then
 	workspace_path=$(pwd)
 fi
 
+# If we're not in the workspace, we need to run from there (e.g. for bazel info)
+cd "${workspace_path}"
+
 requires_default_bazel_installation="false"
 if [[ ${BAZEL_PATH} == "bazel" ]]; then
 	if ! command -v bazel; then
