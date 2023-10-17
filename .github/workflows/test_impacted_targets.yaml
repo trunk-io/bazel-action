@@ -34,7 +34,7 @@ jobs:
             target-branch: do_not_delete/basic-target
             setup-branch: do_not_delete/basic-setup-upload
             bazel-startup-options: ""
-            impact-all-filters-path: .trunk/**
+            impact-all-filters-path: .trunk/trunk.yaml
             expected-targets-file: basic_upload_impacts_all.txt
             upload-targets: "true"
 
@@ -75,7 +75,7 @@ jobs:
             upload-targets: "false"
 
     steps:
-      - name: Checkout
+      - name: Checkout ${{ matrix.setup-branch }}
         uses: actions/checkout@v3
         with:
           ref: ${{ matrix.setup-branch }}

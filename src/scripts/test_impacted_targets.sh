@@ -15,9 +15,14 @@ try_rm_tempdir() {
 
 trap 'try_rm_tempdir' EXIT
 
+bazel_startup_options=""
+if [[ -n ${BAZEL_STARTUP_OPTIONS-} ]]; then
+	bazel_startup_options=$(echo "${BAZEL_STARTUP_OPTIONS}" | tr ',' ' ')
+fi
+
 _bazel() {
 	# trunk-ignore(shellcheck)
-	${BAZEL_PATH} ${BAZEL_STARTUP_OPTIONS} "$@"
+	${BAZEL_PATH} ${bazel_startup_options} "$@"
 }
 
 ##########################
