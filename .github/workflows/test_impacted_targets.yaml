@@ -17,6 +17,8 @@ jobs:
             setup-branch: do_not_delete/basic-setup-modified
             bazel-startup-options: ""
             impact-all-filters-path: ""
+            kind-filter: ""
+            negative-scope-filter: ""
             expected-targets-file: basic_modified.txt
             upload-targets: "false"
 
@@ -26,6 +28,8 @@ jobs:
             setup-branch: do_not_delete/basic-setup-upload
             bazel-startup-options: --host_jvm_args=-Xmx12G,--block_for_lock,--client_debug
             impact-all-filters-path: ""
+            kind-filter: ""
+            negative-scope-filter: ""
             expected-targets-file: basic_upload_startup.txt
             # The upload is expected to fail with exit code 7
             upload-targets: "true"
@@ -36,6 +40,8 @@ jobs:
             setup-branch: do_not_delete/basic-setup-upload
             bazel-startup-options: ""
             impact-all-filters-path: local-action/tests/impact_all_filters.yaml
+            kind-filter: ""
+            negative-scope-filter: ""
             expected-targets-file: basic_upload_impacts_all.txt
             # The upload is expected to fail with exit code 7
             upload-targets: "true"
@@ -46,6 +52,8 @@ jobs:
             setup-branch: do_not_delete/basic-setup-added
             bazel-startup-options: ""
             impact-all-filters-path: ""
+            kind-filter: ""
+            negative-scope-filter: ""
             expected-targets-file: basic_added.txt
             upload-targets: "false"
 
@@ -55,6 +63,8 @@ jobs:
             setup-branch: do_not_delete/basic-setup-removed
             bazel-startup-options: ""
             impact-all-filters-path: ""
+            kind-filter: ""
+            negative-scope-filter: ""
             expected-targets-file: basic_removed.txt
             upload-targets: "false"
 
@@ -64,6 +74,8 @@ jobs:
             setup-branch: do_not_delete/outdated-setup-add
             bazel-startup-options: ""
             impact-all-filters-path: ""
+            kind-filter: ""
+            negative-scope-filter: ""
             expected-targets-file: outdated_added.txt
             upload-targets: "false"
 
@@ -73,7 +85,20 @@ jobs:
             setup-branch: do_not_delete/mixed-setup-add
             bazel-startup-options: ""
             impact-all-filters-path: ""
+            kind-filter: ""
+            negative-scope-filter: ""
             expected-targets-file: many_mixed.txt
+            upload-targets: "false"
+
+          # 8. Test a stress test of targets
+          - test-name: many-filtered
+            target-branch: do_not_delete/outdated-target
+            setup-branch: do_not_delete/mixed-setup-add
+            bazel-startup-options: ""
+            impact-all-filters-path: ""
+            kind-filter: source file
+            negative-scope-filter: \\.cc$
+            expected-targets-file: many_filtered.txt
             upload-targets: "false"
 
     steps:
@@ -108,9 +133,9 @@ jobs:
           impact-all-filters-path: ${{ matrix.impact-all-filters-path }}
           upload-targets: ${{ matrix.upload-targets }}
           test-targets: "true"
-          test-kind-filter: ""
+          test-kind-filter: ${{ matrix.kind-filter }}
           test-negative-kind-filter: ""
-          test-negative-scope-filter: ""
+          test-negative-scope-filter: ${{ matrix.negative-scope-filter }}
         env:
           TEST_TARGETS_EXPECTED_FILE:
             ${{ github.workspace }}/local-action/tests/expected/${{ matrix.expected-targets-file }}
