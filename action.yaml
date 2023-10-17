@@ -153,6 +153,7 @@ runs:
       if: inputs.test-targets == 'true'
       id: test-impacted-targets
       run: ${GITHUB_ACTION_PATH}/src/scripts/test_impacted_targets.sh
+      working-directory: ${{ steps.prerequisites.outputs.workspace_path }}
       shell: bash
       env:
         IMPACTED_TARGETS_FILE:
