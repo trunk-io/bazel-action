@@ -69,7 +69,7 @@ else
 	"${_java}" -jar bazel-diff.jar -V
 	bazel version # Does not require running with startup options.
 
-	_bazel_diff="${_java} -jar bazel-diff.jar"
+	_bazel_diff="${_java} -jar ${workspace_path}/bazel-diff.jar"
 fi
 
 # Outputs
