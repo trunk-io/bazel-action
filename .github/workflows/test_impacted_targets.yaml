@@ -17,7 +17,8 @@ jobs:
             setup-branch: do_not_delete/basic-setup-modified
             bazel-startup-options: ""
             impact-all-filters-path: ""
-            expected-targets-file: local-action/tests/expected/basic_modified.txt
+            expected-targets-file:
+              ${{ github.workspace }}local-action/tests/expected/basic_modified.txt
             upload-targets: "false"
 
           # # 2. Test when some targets are modified and startup options are specified
@@ -26,7 +27,7 @@ jobs:
           #   setup-branch: do_not_delete/basic-setup-upload
           #   bazel-startup-options: --host_jvm_args=-Xmx12G,--block_for_lock,--client_debug
           #   impact-all-filters-path: ""
-          #   expected-targets-file: local-action/tests/expected/basic_upload_startup.txt
+          #   expected-targets-file: ${{ github.workspace }}local-action/tests/expected/basic_upload_startup.txt
           #   upload-targets: "true"
 
           # # 3. Test when some targets are modified and impact-all-filters-path is specified
@@ -35,7 +36,7 @@ jobs:
           #   setup-branch: do_not_delete/basic-setup-upload
           #   bazel-startup-options: ""
           #   impact-all-filters-path: .trunk
-          #   expected-targets-file: local-action/tests/expected/basic_upload_impacts_all.txt
+          #   expected-targets-file: ${{ github.workspace }}local-action/tests/expected/basic_upload_impacts_all.txt
           #   upload-targets: "true"
 
           # # 4. Test when some targets are added
@@ -44,7 +45,7 @@ jobs:
           #   setup-branch: do_not_delete/basic-setup-added
           #   bazel-startup-options: ""
           #   impact-all-filters-path: ""
-          #   expected-targets-file: local-action/tests/expected/basic_setup_added.txt
+          #   expected-targets-file: ${{ github.workspace }}local-action/tests/expected/basic_setup_added.txt
           #   upload-targets: "false"
 
           # # 5. Test when some targets are removed
@@ -53,7 +54,7 @@ jobs:
           #   setup-branch: do_not_delete/basic-setup-removed
           #   bazel-startup-options: ""
           #   impact-all-filters-path: ""
-          #   expected-targets-file: local-action/tests/expected/basic_removed.txt
+          #   expected-targets-file: ${{ github.workspace }}local-action/tests/expected/basic_removed.txt
           #   upload-targets: "false"
 
           # # 6. Test when some targets are added but the target branch is out of date (this is where upload and test diffs vary)
@@ -62,7 +63,7 @@ jobs:
           #   setup-branch: do_not_delete/outdated-setup-add
           #   bazel-startup-options: ""
           #   impact-all-filters-path: ""
-          #   expected-targets-file: local-action/tests/expected/outdated_added.txt
+          #   expected-targets-file: ${{ github.workspace }}local-action/tests/expected/outdated_added.txt
           #   upload-targets: "false"
 
           # # 7. Test a stress test of targets
@@ -71,7 +72,7 @@ jobs:
           #   setup-branch: do_not_delete/mixed-setup-add
           #   bazel-startup-options: ""
           #   impact-all-filters-path: ""
-          #   expected-targets-file: local-action/tests/expected/many_mixed.txt
+          #   expected-targets-file: ${{ github.workspace }}local-action/tests/expected/many_mixed.txt
           #   upload-targets: "false"
 
     steps:
@@ -116,9 +117,10 @@ jobs:
 
       - name: Assert number targets
         shell: bash
-        run:
-          expected_targets=$(wc -l ${{ matrix.expected-targets-file }}) if [[ "${{
-          steps.test.outputs.detected_test_targets }}" -ne "${expected_targets}" ]]; then echo
-          "Incorrect number of tests run, expected ${expected_targets}, got ${{
-          steps.test.outputs.detected_test_targets }}" exit 1 fi echo "Tests identified
-          successfully"
+        run: |
+          expected_targets=$(wc -l ${{ matrix.expected-targets-file }})
+          if [[ "${{steps.test.outputs.detected_test_targets }}" -ne "${expected_targets}" ]]; then
+            echo "Incorrect number of tests run, expected ${expected_targets}, got ${{steps.test.outputs.detected_test_targets }}"
+            exit 1
+          fi
+          echo "Tests identified successfully"
