@@ -2,9 +2,19 @@
 
 set -euo pipefail
 
-if [[ $1 == "test" ]]; then
+is_test=false
+targets_file=""
+
+for var in "$@"; do
+	if [[ ${var} == "test" ]]; then
+		is_test=true
+	elif [[ ${var} =~ ^--target_pattern_file ]]; then
+		targets_file=$(echo "${var}" | awk -F "=" '{print $2}')
+	fi
+done
+
+if [[ ${is_test} == true ]]; then
 	echo "Using bazel testing stub for $*"
-	targets_file=$(echo "$3" | awk -F "=" '{print $2}')
 	diff "${targets_file}" "${TEST_TARGETS_EXPECTED_FILE}"
 	num_targets=$(wc -l "${targets_file}")
 
