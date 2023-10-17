@@ -75,17 +75,17 @@ jobs:
             upload-targets: "false"
 
     steps:
-      # Check out this repo separately in order to use its action independent of the state of the test inputs
-      - name: Checkout ${{ github.repository }}
-        uses: actions/checkout@v3
-        with:
-          path: local-action
-
       - name: Checkout
         uses: actions/checkout@v3
         with:
           ref: ${{ matrix.setup-branch }}
           fetch-depth: 0
+
+      # Check out this repo separately in order to use its action independent of the state of the test inputs
+      - name: Checkout ${{ github.repository }}
+        uses: actions/checkout@v3
+        with:
+          path: local-action
 
       # We will override bazel for purposes of asserting that tests are run, but we still need to invoke it and have it in the PATH for computing targets
       - name: Setup Bazel
@@ -111,6 +111,7 @@ jobs:
         env:
           TEST_TARGETS_EXPECTED_FILE: ${{ matrix.expected-targets-file }}
           API_URL: localhost
+          PR_SETUP_BRANCH: ${{ matrix.setup-branch }}
 
       - name: Assert number targets
         shell: bash
