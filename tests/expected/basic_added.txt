@@ -1,0 +1,5 @@
+//lib:BUILD
+//lib:lib
+//lib3:BUILD
+//lib3:foo.txt
+//lib3:lib3
