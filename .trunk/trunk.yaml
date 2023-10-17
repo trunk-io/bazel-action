@@ -16,3 +16,6 @@ runtimes:
 lint:
   disabled:
     - eslint
+  ignore:
+    - linters: [buildifier]
+      paths: [tests/simple_bazel_workspace/**]
