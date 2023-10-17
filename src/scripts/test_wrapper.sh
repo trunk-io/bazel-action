@@ -14,7 +14,7 @@ PR_BRANCH=$(git branch --show-current)
 if [[ -z ${PR_BRANCH} ]]; then
 	PR_BRANCH="HEAD"
 fi
-TARGET_BRANCH=main
+TARGET_BRANCH=do_not_delete/basic-target
 BAZEL_PATH=/home/tyler/repos/trunk/.trunk/tools/bazel
 CACHE_DIR="${HOME}/.cache/trunk/bazel-diff"
 

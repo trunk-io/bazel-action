@@ -56,18 +56,18 @@ merge_base_sha=$(git merge-base HEAD "${merge_instance_branch_head_sha}")
 echo "Identified changes: " "${impacts_all_detected}"
 
 # Setup bazel-diff if necessary
-if command -v bazel-diff; then
-	_bazel_diff="bazel-diff"
-else
-	_java=$(bazel info java-home)/bin/java
+# if command -v bazel-diff; then
+# 	_bazel_diff="bazel-diff"
+# else
+_java=$(bazel info java-home)/bin/java
 
-	# Install the bazel-diff JAR. Avoid cloning the repo, as there will be conflicting WORKSPACES.
-	curl --retry 5 -Lo bazel-diff.jar https://github.com/Tinder/bazel-diff/releases/latest/download/bazel-diff_deploy.jar
-	"${_java}" -jar bazel-diff.jar -V
-	bazel version # Does not require running with startup options.
+# Install the bazel-diff JAR. Avoid cloning the repo, as there will be conflicting WORKSPACES.
+curl --retry 5 -Lo bazel-diff.jar https://github.com/Tinder/bazel-diff/releases/latest/download/bazel-diff_deploy.jar
+"${_java}" -jar bazel-diff.jar -V
+bazel version # Does not require running with startup options.
 
-	_bazel_diff="${_java} -jar bazel-diff.jar"
-fi
+_bazel_diff="${_java} -jar bazel-diff.jar"
+# fi
 
 # Outputs
 if [[ -v GITHUB_OUTPUT && -f ${GITHUB_OUTPUT} ]]; then
