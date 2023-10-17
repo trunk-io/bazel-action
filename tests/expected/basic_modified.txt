@@ -1,0 +1,3 @@
+//lib:lib
+//lib2:foo.txt
+//lib2:lib2
