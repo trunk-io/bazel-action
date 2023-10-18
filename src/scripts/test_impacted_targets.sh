@@ -33,6 +33,9 @@ exec 3>"${tempdir}/query.txt"
 echo "let targets = set(" >&3
 sed -e "s/^/'/g" -e "s/\$/'/g" <"${IMPACTED_TARGETS_FILE}" >&3
 echo ") in" >&3
+if [[ -n ${BAZEL_SCOPE_FILTER} ]]; then
+	echo "let targets = filter('${BAZEL_SCOPE_FILTER}', \$targets) in" >&3
+fi
 echo "let targets = kind('${BAZEL_KIND_FILTER}', \$targets) in" >&3
 # trunk-ignore(shellcheck/SC2016)
 echo '$targets' >&3
@@ -71,7 +74,7 @@ echo -e "${info_color}Running bazel test on ${target_count} targets...${reset}"
 
 echo
 ret=0
-_bazel "test" --test_tag_filters=-manual --target_pattern_file="${tempdir}/filtered_targets.txt" "$@" || ret=$?
+_bazel "${BAZEL_TEST_COMMAND}" --target_pattern_file="${tempdir}/filtered_targets.txt" || ret=$?
 
 # Exit code 4 from bazel test means: Build successful but no tests were found even though testing was requested.
 # This is ok since this change may legitimately cause no test targets to run.
