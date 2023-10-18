@@ -35,7 +35,7 @@ jobs:
             target-branch: do_not_delete/basic-target
             setup-branch: do_not_delete/basic-setup-upload
             bazel-startup-options: ""
-            impact-all-filters-path: local-action/.trunk/impact_all_filters.yaml
+            impact-all-filters-path: local-action/tests/impact_all_filters.yaml
             expected-targets-file: basic_upload_impacts_all.txt
             # The upload is expected to fail with exit code 7
             upload-targets: "true"

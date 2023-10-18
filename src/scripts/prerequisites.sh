@@ -9,8 +9,9 @@ fetchRemoteGitHistory() {
 	git fetch --quiet --depth=2147483647 origin "$@"
 }
 
-# trunk-ignore(shellcheck)
-pr_branch="${PR_BRANCH}"
+# PR_SETUP_BRANCH used for testing only
+# trunk-ignore(shellcheck/SC2153)
+pr_branch=${PR_SETUP_BRANCH} || ${PR_BRANCH}
 merge_instance_branch="${TARGET_BRANCH}"
 if [[ -z ${merge_instance_branch} ]]; then
 	merge_instance_branch="${DEFAULT_BRANCH}"
