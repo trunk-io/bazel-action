@@ -1,0 +1,6 @@
+# Any PR that modifies any file in these paths will be considered a Merge sync point.
+.trunk:
+  - .trunk/**/*
+
+.github:
+  - .github/**/*

@@ -4,7 +4,7 @@ on: pull_request
 permissions: read-all
 
 jobs:
-  tests:
+  tests_compute_targets:
     runs-on: ubuntu-latest
     name: Compute Impacted Targets Tests
     steps:

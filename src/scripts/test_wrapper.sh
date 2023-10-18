@@ -17,6 +17,7 @@ fi
 TARGET_BRANCH=main
 BAZEL_PATH=/home/tyler/repos/trunk/.trunk/tools/bazel
 CACHE_DIR="${HOME}/.cache/trunk/bazel-diff"
+BAZEL_STARTUP_OPTIONS=""
 
 #################
 ##### Utils #####

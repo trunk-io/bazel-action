@@ -9,8 +9,9 @@ fetchRemoteGitHistory() {
 	git fetch --quiet --depth=2147483647 origin "$@"
 }
 
-# trunk-ignore(shellcheck)
-pr_branch="${PR_BRANCH}"
+# PR_SETUP_BRANCH used for testing only
+# trunk-ignore(shellcheck/SC2153)
+pr_branch=${PR_SETUP_BRANCH} || ${PR_BRANCH}
 merge_instance_branch="${TARGET_BRANCH}"
 if [[ -z ${merge_instance_branch} ]]; then
 	merge_instance_branch="${DEFAULT_BRANCH}"
@@ -25,6 +26,9 @@ workspace_path="${WORKSPACE_PATH-}"
 if [[ -z ${workspace_path} ]]; then
 	workspace_path=$(pwd)
 fi
+
+# If we're not in the workspace, we need to run from there (e.g. for bazel info)
+cd "${workspace_path}"
 
 requires_default_bazel_installation="false"
 if [[ ${BAZEL_PATH} == "bazel" ]]; then
@@ -66,7 +70,7 @@ else
 	"${_java}" -jar bazel-diff.jar -V
 	bazel version # Does not require running with startup options.
 
-	_bazel_diff="${_java} -jar bazel-diff.jar"
+	_bazel_diff="${_java} -jar ${workspace_path}/bazel-diff.jar"
 fi
 
 # Outputs

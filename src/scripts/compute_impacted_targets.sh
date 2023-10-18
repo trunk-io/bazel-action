@@ -90,7 +90,7 @@ generate_hashes() {
 		"$1"
 }
 
-cache_dir=${CACHE_DIR:-.}
+cache_dir=${CACHE_DIR:-${WORKSPACE_PATH}}
 
 #####################
 ##### Git setup #####

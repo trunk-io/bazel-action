@@ -1,0 +1,129 @@
+name: Pull Request
+on: pull_request
+
+permissions: read-all
+
+jobs:
+  tests_impacted_targets:
+    runs-on: ubuntu-latest
+    name: ${{ matrix.test-name }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # 1. Test when some targets are modified
+          - test-name: basic-modified
+            target-branch: do_not_delete/basic-target
+            setup-branch: do_not_delete/basic-setup-modified
+            bazel-startup-options: ""
+            impact-all-filters-path: ""
+            expected-targets-file: basic_modified.txt
+            upload-targets: "false"
+
+          # 2. Test when some targets are modified and startup options are specified
+          - test-name: basic-upload-startup
+            target-branch: do_not_delete/basic-target
+            setup-branch: do_not_delete/basic-setup-upload
+            bazel-startup-options: --host_jvm_args=-Xmx12G,--block_for_lock,--client_debug
+            impact-all-filters-path: ""
+            expected-targets-file: basic_upload_startup.txt
+            # The upload is expected to fail with exit code 7
+            upload-targets: "true"
+
+          # 3. Test when some targets are modified and impact-all-filters-path is specified
+          - test-name: basic-upload-impacts-all
+            target-branch: do_not_delete/basic-target
+            setup-branch: do_not_delete/basic-setup-upload
+            bazel-startup-options: ""
+            impact-all-filters-path: local-action/tests/impact_all_filters.yaml
+            expected-targets-file: basic_upload_impacts_all.txt
+            # The upload is expected to fail with exit code 7
+            upload-targets: "true"
+
+          # 4. Test when some targets are added
+          - test-name: basic-added
+            target-branch: do_not_delete/basic-target
+            setup-branch: do_not_delete/basic-setup-added
+            bazel-startup-options: ""
+            impact-all-filters-path: ""
+            expected-targets-file: basic_added.txt
+            upload-targets: "false"
+
+          # 5. Test when some targets are removed
+          - test-name: basic-removed
+            target-branch: do_not_delete/basic-target
+            setup-branch: do_not_delete/basic-setup-removed
+            bazel-startup-options: ""
+            impact-all-filters-path: ""
+            expected-targets-file: basic_removed.txt
+            upload-targets: "false"
+
+          # 6. Test when some targets are added but the target branch is out of date (this is where upload and test diffs vary)
+          - test-name: outdated-added
+            target-branch: do_not_delete/outdated-target
+            setup-branch: do_not_delete/outdated-setup-add
+            bazel-startup-options: ""
+            impact-all-filters-path: ""
+            expected-targets-file: outdated_added.txt
+            upload-targets: "false"
+
+          # 7. Test a stress test of targets
+          - test-name: many-mixed
+            target-branch: do_not_delete/outdated-target
+            setup-branch: do_not_delete/mixed-setup-add
+            bazel-startup-options: ""
+            impact-all-filters-path: ""
+            expected-targets-file: many_mixed.txt
+            upload-targets: "false"
+
+    steps:
+      - name: Checkout ${{ matrix.setup-branch }}
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ matrix.setup-branch }}
+          fetch-depth: 0
+
+      # Check out this repo separately in order to use its action independent of the state of the test inputs
+      - name: Checkout ${{ github.repository }}
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.head_ref }}
+          path: local-action
+
+      # We will override bazel for purposes of asserting that tests are run, but we still need to invoke it and have it in the PATH for computing targets
+      - name: Setup Bazel
+        # trunk-ignore(semgrep): Trust third-party `bazelbuild` GH Action
+        uses: bazelbuild/setup-bazelisk@v2
+
+      - name: Test impacted targets
+        id: test
+        uses: ./local-action/
+        with:
+          trunk-token: test-token
+          target-branch: ${{ matrix.target-branch }}
+          bazel-workspace-path: ${{ github.workspace }}/tests/simple_bazel_workspace
+          verbose: "true"
+          bazel-startup-options: ${{ matrix.bazel-startup-options }}
+          bazel-path: ${{ github.workspace }}/local-action/tests/bazel_stub.sh
+          impact-all-filters-path: ${{ matrix.impact-all-filters-path }}
+          upload-targets: ${{ matrix.upload-targets }}
+          test-targets: "true"
+          test-kind-filter: ""
+          test-negative-kind-filter: ""
+          test-negative-scope-filter: ""
+        env:
+          TEST_TARGETS_EXPECTED_FILE:
+            ${{ github.workspace }}/local-action/tests/expected/${{ matrix.expected-targets-file }}
+          API_URL: localhost
+          PR_SETUP_BRANCH: ${{ matrix.setup-branch }}
+
+      - name: Assert number targets
+        shell: bash
+        run: |
+          expected_file="${{ github.workspace }}/local-action/tests/expected/${{ matrix.expected-targets-file }}"
+          expected_targets=$(wc -l "${expected_file}")
+          if [[ "${{ steps.test.outputs.detected_test_targets }}" -ne "${expected_targets}" ]]; then
+            echo "Incorrect number of tests run, expected ${expected_targets}, got ${{ steps.test.outputs.detected_test_targets }}"
+            exit 1
+          fi
+          echo "Tests identified successfully"
