@@ -97,7 +97,7 @@ jobs:
             bazel-startup-options: ""
             impact-all-filters-path: ""
             kind-filter: source file
-            negative-scope-filter: \\.txt$
+            negative-scope-filter: .txt$
             expected-targets-file: many_filtered.txt
             upload-targets: "false"
 
