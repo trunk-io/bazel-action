@@ -1,0 +1,10 @@
+//lib10:BUILD
+//lib11:BUILD
+//lib12:BUILD
+//lib13:BUILD
+//lib14:BUILD
+//lib15:BUILD
+//lib16:BUILD
+//lib17:BUILD
+//lib18:BUILD
+//lib19:BUILD
