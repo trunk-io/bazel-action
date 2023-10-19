@@ -4,8 +4,10 @@ description: Trunk.io Github Action to Compute, Upload, and Test Impacted Target
 
 inputs:
   trunk-token:
-    description: Repo API token used for authentication. Can be found at app.trunk.io.
-    required: true
+    description:
+      Repo API token used for authentication. Can be found at app.trunk.io. Required if
+      upload-targets
+    required: false
   target-branch:
     description:
       The Merge Instance's target branch. If unspecified, defaults to the repository's default
