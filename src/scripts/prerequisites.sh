@@ -56,7 +56,7 @@ pr_branch_head_sha=$(git rev-parse "origin/${pr_branch}")
 
 # When testing, we use the merge-base rather than the HEAD of the target branch
 git log -n 2 || true
-echo "Checking merge-base of HEAD ($(git rev-parse HEAD)) and merge branch (${merge_instance_branch_head_sha})"
+echo "Checking merge-base of HEAD ($(git rev-parse HEAD || true)) and merge branch (${merge_instance_branch_head_sha})"
 merge_base_sha=$(git merge-base HEAD "${merge_instance_branch_head_sha}")
 echo "Got ${merge_base_sha}"
 
