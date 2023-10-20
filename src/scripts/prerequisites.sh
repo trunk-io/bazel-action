@@ -48,11 +48,11 @@ if [[ -n ${IMPACTS_FILTERS_CHANGES+x} ]]; then
 fi
 
 fetchRemoteGitHistory "${merge_instance_branch}"
-fetchRemoteGitHistory "${pr_branch}" || true
+fetchRemoteGitHistory "${pr_branch}" || echo "skipping PR branch fetch"
 
 merge_instance_branch_head_sha=$(git rev-parse "origin/${merge_instance_branch}")
 
-pr_branch_head_sha=$(git rev-parse "${pr_branch}")
+pr_branch_head_sha=$(git rev-parse "origin/${pr_branch}")
 
 # When testing, we use the merge-base rather than the HEAD of the target branch
 merge_base_sha=$(git merge-base HEAD "${merge_instance_branch_head_sha}")
