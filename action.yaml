@@ -4,8 +4,10 @@ description: Trunk.io Github Action to Compute, Upload, and Test Impacted Target
 
 inputs:
   trunk-token:
-    description: Repo API token used for authentication. Can be found at app.trunk.io.
-    required: true
+    description:
+      Repo API token used for authentication. Can be found at app.trunk.io. Required if
+      upload-targets
+    required: false
   target-branch:
     description:
       The Merge Instance's target branch. If unspecified, defaults to the repository's default
@@ -44,16 +46,23 @@ inputs:
     description: Run bazel test on the computed targets. Recommended if running on PRs.
     required: false
     default: "true"
+  bazel-test-command:
+    description: The command to run against bazel when running tests.
+    required: false
+    default: test
   test-kind-filter:
     description: Kind filter to apply to impacted targets
     required: false
     default: .+_library|.+_binary|.+_test
+  test-scope-filter:
+    description: Scope filter to apply to impacted targets
+    required: false
   test-negative-kind-filter:
     description: Negative kind filter to apply to impacted targets
     required: false
     default: generated file
   test-negative-scope-filter:
-    description: Scope filter to apply to impacted targets
+    description: Negative scope filter to apply to impacted targets
     required: false
     default: //external
 
@@ -158,8 +167,10 @@ runs:
         IMPACTED_TARGETS_FILE:
           ${{ steps.compute-impacted-targets-test.outputs.impacted_targets_out }}
         BAZEL_PATH: ${{ inputs.bazel-path }}
+        BAZEL_TEST_COMMAND: ${{ inputs.bazel-test-command }}
         BAZEL_STARTUP_OPTIONS: ${{ inputs.bazel-startup-options }}
         BAZEL_KIND_FILTER: ${{ inputs.test-kind-filter }}
+        BAZEL_SCOPE_FILTER: ${{ inputs.test-scope-filter }}
         BAZEL_NEGATIVE_KIND_FILTER: ${{ inputs.test-negative-kind-filter }}
         BAZEL_NEGATIVE_SCOPE_FILTER: ${{ inputs.test-negative-scope-filter }}
         CI: "true"
