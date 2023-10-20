@@ -95,6 +95,10 @@ cache_dir=${CACHE_DIR:-${WORKSPACE_PATH}}
 #####################
 ##### Git setup #####
 #####################
+
+# The new hash after commiting.
+head_hash=$(git rev-parse HEAD)
+
 ## Verbose logging for the Merge Instance and PR branch.
 if [[ -n ${VERBOSE-} ]]; then
 	# Find the merge base of the two branches
@@ -115,9 +119,6 @@ if [[ -n ${VERBOSE-} ]]; then
 	git checkout -q "${original_branch}"
 	git log -n "${pr_depth}" --oneline | cat
 fi
-
-# The new hash after commiting.
-head_hash=$(git rev-parse HEAD)
 
 ###########################
 ##### Compute targets #####
