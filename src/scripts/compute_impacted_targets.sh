@@ -148,6 +148,7 @@ if [[ -e ${merge_instance_with_pr_branch_out} ]]; then
 	logIfVerbose "Hashes for merge result already exist: ${merge_instance_branch_out}..."
 else
 	logIfVerbose "Hashes for merge result don't exist in cache, merging and computing..."
+	git log -n 4 # TODO: REMOVE
 	git -c "user.name=Trunk Actions" -c "user.email=actions@trunk.io" merge --squash "${original_branch}"
 	generate_hashes "${merge_instance_with_pr_branch_out}"
 fi
