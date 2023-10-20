@@ -106,6 +106,7 @@ if [[ -n ${VERBOSE-} ]]; then
 	echo "Merge Base= ${merge_base_sha}"
 
 	# Find the number of commits between the merge base and the merge instance's HEAD
+	# This should be 0 when testing
 	merge_instance_depth=$(git rev-list "${merge_base_sha}".."${MERGE_INSTANCE_BRANCH_HEAD_SHA}" | wc -l)
 	echo "Merge Instance Depth= ${merge_instance_depth}"
 
