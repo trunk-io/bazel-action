@@ -116,6 +116,9 @@ if [[ -n ${VERBOSE-} ]]; then
 	git log -n "${pr_depth}" --oneline | cat
 fi
 
+# The new hash after commiting.
+head_hash=$(git rev-parse HEAD)
+
 ###########################
 ##### Compute targets #####
 ###########################
