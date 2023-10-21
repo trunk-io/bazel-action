@@ -50,9 +50,9 @@ fi
 fetchRemoteGitHistory "${merge_instance_branch}"
 fetchRemoteGitHistory "${pr_branch}" || echo "skipping PR branch fetch"
 
-merge_instance_branch_head_sha=$(git rev-parse "origin/${merge_instance_branch}")
+merge_instance_branch_head_sha=$(git rev-parse "${merge_instance_branch}")
 
-pr_branch_head_sha=$(git rev-parse "${pr_branch}")
+pr_branch_head_sha=$(git rev-parse "origin/${pr_branch}")
 
 # When testing, we use the merge-base rather than the HEAD of the target branch
 git log -n 2 || true
