@@ -8,7 +8,7 @@ inputs:
       Repo API token used for authentication. Can be found at app.trunk.io. Required if
       upload-targets
     required: false
-  target-branch:
+  target-ref:
     description:
       The Merge Instance's target branch. If unspecified, defaults to the repository's default
       branch.
@@ -98,7 +98,7 @@ runs:
       shell: bash
       env:
         DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
-        TARGET_BRANCH: ${{ inputs.target-branch }}
+        TARGET_REF: ${{ inputs.target-ref }}
         PR_BRANCH: ${{ github.head_ref }}
         WORKSPACE_PATH: ${{ inputs.bazel-workspace-path }}
         BAZEL_PATH: ${{ inputs.bazel-path }}

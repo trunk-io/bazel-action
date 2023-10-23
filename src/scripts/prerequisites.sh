@@ -50,7 +50,14 @@ fi
 fetchRemoteGitHistory "${merge_instance_branch}"
 fetchRemoteGitHistory "${pr_branch}" || echo "skipping PR branch fetch"
 
-merge_instance_branch_head_sha=$(git rev-parse "origin/${merge_instance_branch}")
+merge_instance_sha=$(git rev-parse "${merge_instance_branch}")
+if [[ ${merge_instance_branch} == "${merge_instance_sha}" ]]; then
+	# merge_instance_branch is a SHA
+	merge_instance_branch_head_sha="${merge_instance_sha}"
+else
+	# branch may be out of date. We need to use the remote version
+	merge_instance_branch_head_sha=$(git rev-parse "origin/${merge_instance_branch}")
+fi
 
 pr_branch_head_sha=$(git rev-parse HEAD)
 
