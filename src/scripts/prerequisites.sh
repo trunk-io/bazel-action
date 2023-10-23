@@ -50,7 +50,7 @@ fi
 fetchRemoteGitHistory "${merge_instance_branch}"
 fetchRemoteGitHistory "${pr_branch}" || echo "skipping PR branch fetch"
 
-merge_instance_sha=$(git rev-parse "${merge_instance_branch}")
+merge_instance_sha=$(git rev-parse "${merge_instance_branch}") || true
 if [[ ${merge_instance_branch} == "${merge_instance_sha}" ]]; then
 	# merge_instance_branch is a SHA
 	merge_instance_branch_head_sha="${merge_instance_sha}"
@@ -62,7 +62,6 @@ fi
 pr_branch_head_sha=$(git rev-parse HEAD)
 
 # When testing, we use the merge-base rather than the HEAD of the target branch
-git log -n 2 || true
 echo "Checking merge-base of HEAD ($(git rev-parse HEAD || true)) and merge branch (${merge_instance_branch_head_sha})"
 merge_base_sha=$(git merge-base HEAD "${merge_instance_branch_head_sha}")
 echo "Got ${merge_base_sha}"

@@ -65,7 +65,7 @@ echo -e "${info_color}Running bazel ${BAZEL_TEST_COMMAND} on ${target_count} tar
 
 echo
 ret=0
-_bazel "${BAZEL_TEST_COMMAND}" --target_pattern_file="${tempdir}/filtered_targets.txt" # || ret=$?
+_bazel "${BAZEL_TEST_COMMAND}" --target_pattern_file="${tempdir}/filtered_targets.txt" || ret=$?
 
 # Lazily cleanup tempdir since we rely on other wrappers' trap invocations
 if [[ -n ${tempdir+x} ]]; then

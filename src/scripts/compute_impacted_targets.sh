@@ -16,10 +16,7 @@ if [[ (-z ${MERGE_INSTANCE_BRANCH_HEAD_SHA}) || (-z ${PR_BRANCH_HEAD_SHA}) ]]; t
 	exit 2
 fi
 
-# original_branch="${PR_BRANCH}"
-# if [[ ${original_branch} == "HEAD" ]]; then
 original_branch="${PR_BRANCH_HEAD_SHA}"
-# fi
 
 if [[ -z ${WORKSPACE_PATH} ]]; then
 	echo "Missing workspace path"
@@ -106,7 +103,7 @@ if [[ -n ${VERBOSE-} ]]; then
 	echo "Merge Base= ${merge_base_sha}"
 
 	# Find the number of commits between the merge base and the merge instance's HEAD
-	# This should be 0 when testing
+	# NOTE(Tyler): This should be 0 during mock testing
 	merge_instance_depth=$(git rev-list "${merge_base_sha}".."${MERGE_INSTANCE_BRANCH_HEAD_SHA}" | wc -l)
 	echo "Merge Instance Depth= ${merge_instance_depth}"
 
@@ -150,7 +147,6 @@ if [[ -e ${merge_instance_with_pr_branch_out} ]]; then
 	logIfVerbose "Hashes for merge result already exist: ${merge_instance_branch_out}..."
 else
 	logIfVerbose "Hashes for merge result don't exist in cache, merging and computing..."
-	git log -n 4 # TODO: REMOVE
 	git -c "user.name=Trunk Actions" -c "user.email=actions@trunk.io" merge --squash "${original_branch}"
 	generate_hashes "${merge_instance_with_pr_branch_out}"
 fi
