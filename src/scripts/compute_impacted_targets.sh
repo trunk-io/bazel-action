@@ -16,10 +16,10 @@ if [[ (-z ${MERGE_INSTANCE_BRANCH_HEAD_SHA}) || (-z ${PR_BRANCH_HEAD_SHA}) ]]; t
 	exit 2
 fi
 
-original_branch="${PR_BRANCH}"
-if [[ ${original_branch} == "HEAD" ]]; then
-	original_branch="${PR_BRANCH_HEAD_SHA}"
-fi
+# original_branch="${PR_BRANCH}"
+# if [[ ${original_branch} == "HEAD" ]]; then
+original_branch="${PR_BRANCH_HEAD_SHA}"
+# fi
 
 if [[ -z ${WORKSPACE_PATH} ]]; then
 	echo "Missing workspace path"
