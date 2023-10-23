@@ -50,7 +50,7 @@ fi
 fetchRemoteGitHistory "${merge_instance_branch}"
 fetchRemoteGitHistory "${pr_branch}" || echo "skipping PR branch fetch"
 
-merge_instance_sha=$(git rev-parse "${merge_instance_branch}") || true
+merge_instance_sha=$(git rev-parse "${merge_instance_branch}" || echo "-invalid")
 if [[ ${merge_instance_branch} == "${merge_instance_sha}" ]]; then
 	# merge_instance_branch is a SHA
 	merge_instance_branch_head_sha="${merge_instance_sha}"
