@@ -49,7 +49,7 @@ logIfVerbose "Bazel startup options" "${bazel_startup_options}"
 
 _bazel() {
 	# trunk-ignore(shellcheck)
-	${BAZEL_PATH} ${bazel_startup_options} "$@"
+	${BAZEL_PATH} "${bazel_startup_options}" "$@"
 }
 
 _bazel_diff() {
