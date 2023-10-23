@@ -30,7 +30,7 @@ fi
 ##### Utils #####
 #################
 ifVerbose() {
-	if [[ -n ${VERBOSE-} ]]; then
+	if [[ -n ${VERBOSE+x} ]]; then
 		"$@"
 	fi
 }
@@ -53,7 +53,7 @@ _bazel() {
 }
 
 _bazel_diff() {
-	if [[ -n ${VERBOSE-} ]]; then
+	if [[ -n ${VERBOSE+x} ]]; then
 		${BAZEL_DIFF_CMD} "$@" --verbose
 	else
 		${BAZEL_DIFF_CMD} "$@"

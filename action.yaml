@@ -174,3 +174,4 @@ runs:
         BAZEL_NEGATIVE_KIND_FILTER: ${{ inputs.test-negative-kind-filter }}
         BAZEL_NEGATIVE_SCOPE_FILTER: ${{ inputs.test-negative-scope-filter }}
         CI: "true"
+        VERBOSE_MORE: "true"
