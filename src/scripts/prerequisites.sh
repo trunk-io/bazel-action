@@ -64,7 +64,6 @@ pr_branch_head_sha=$(git rev-parse HEAD)
 # When testing, we use the merge-base rather than the HEAD of the target branch
 echo "Checking merge-base of HEAD ($(git rev-parse HEAD || true)) and merge branch (${merge_instance_branch_head_sha})"
 merge_base_sha=$(git merge-base HEAD "${merge_instance_branch_head_sha}")
-echo "Got ${merge_base_sha}"
 
 echo "Identified changes: " "${impacts_all_detected}"
 
