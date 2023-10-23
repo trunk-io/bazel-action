@@ -61,7 +61,7 @@ if [[ ${target_count} -eq 0 ]]; then
 	exit 0
 fi
 
-echo -e "${info_color}Running bazel test on ${target_count} targets...${reset}"
+echo -e "${info_color}Running bazel ${BAZEL_TEST_COMMAND} on ${target_count} targets...${reset}"
 
 echo
 ret=0
