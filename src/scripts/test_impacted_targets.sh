@@ -12,9 +12,8 @@ if [[ -n ${BAZEL_STARTUP_OPTIONS-} ]]; then
 fi
 
 _bazel() {
-	echo "running ${BAZEL_PATH} ${bazel_startup_options} $@"
 	# trunk-ignore(shellcheck)
-	${BAZEL_PATH} "${bazel_startup_options}" "$@"
+	${BAZEL_PATH} ${bazel_startup_options} "$@"
 }
 
 ##########################
