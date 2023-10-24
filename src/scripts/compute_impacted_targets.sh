@@ -6,11 +6,6 @@ shopt -s expand_aliases
 ##################################
 ##### Validate required vars #####
 ##################################
-if [[ -z ${PR_BRANCH} ]]; then
-	echo "Missing branch"
-	exit 2
-fi
-
 if [[ (-z ${MERGE_INSTANCE_BRANCH_HEAD_SHA}) || (-z ${PR_BRANCH_HEAD_SHA}) ]]; then
 	echo "Missing sha"
 	exit 2
