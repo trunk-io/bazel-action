@@ -15,7 +15,7 @@ if [[ -z ${PR_BRANCH} ]]; then
 	PR_BRANCH="HEAD"
 fi
 TARGET_BRANCH=main
-BAZEL_PATH=/home/tyler/repos/trunk/.trunk/tools/bazel
+BAZEL_PATH="${BAZEL_PATH:-.trunk/tools/bazel}"
 CACHE_DIR="${HOME}/.cache/trunk/bazel-diff"
 BAZEL_STARTUP_OPTIONS=""
 

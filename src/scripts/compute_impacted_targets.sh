@@ -16,10 +16,7 @@ if [[ (-z ${MERGE_INSTANCE_BRANCH_HEAD_SHA}) || (-z ${PR_BRANCH_HEAD_SHA}) ]]; t
 	exit 2
 fi
 
-original_branch="${PR_BRANCH}"
-if [[ ${original_branch} == "HEAD" ]]; then
-	original_branch="${PR_BRANCH_HEAD_SHA}"
-fi
+original_branch="${PR_BRANCH_HEAD_SHA}"
 
 if [[ -z ${WORKSPACE_PATH} ]]; then
 	echo "Missing workspace path"
@@ -95,6 +92,10 @@ cache_dir=${CACHE_DIR:-${WORKSPACE_PATH}}
 #####################
 ##### Git setup #####
 #####################
+
+# The new hash after commiting.
+head_hash=$(git rev-parse HEAD)
+
 ## Verbose logging for the Merge Instance and PR branch.
 if [[ -n ${VERBOSE-} ]]; then
 	# Find the merge base of the two branches
@@ -102,6 +103,7 @@ if [[ -n ${VERBOSE-} ]]; then
 	echo "Merge Base= ${merge_base_sha}"
 
 	# Find the number of commits between the merge base and the merge instance's HEAD
+	# NOTE(Tyler): This should be 0 during mock testing
 	merge_instance_depth=$(git rev-list "${merge_base_sha}".."${MERGE_INSTANCE_BRANCH_HEAD_SHA}" | wc -l)
 	echo "Merge Instance Depth= ${merge_instance_depth}"
 

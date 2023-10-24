@@ -10,8 +10,8 @@ fetchRemoteGitHistory() {
 }
 
 # PR_SETUP_BRANCH used for testing only
-# trunk-ignore(shellcheck/SC2153)
-pr_branch=${PR_SETUP_BRANCH} || ${PR_BRANCH}
+pr_branch=${PR_SETUP_BRANCH:-${PR_BRANCH}}
+
 merge_instance_branch="${TARGET_BRANCH}"
 if [[ -z ${merge_instance_branch} ]]; then
 	merge_instance_branch="${DEFAULT_BRANCH}"
@@ -48,13 +48,21 @@ if [[ -n ${IMPACTS_FILTERS_CHANGES+x} ]]; then
 fi
 
 fetchRemoteGitHistory "${merge_instance_branch}"
-fetchRemoteGitHistory "${pr_branch}" || true
+fetchRemoteGitHistory "${pr_branch}" || echo "skipping PR branch fetch"
 
-merge_instance_branch_head_sha=$(git rev-parse "origin/${merge_instance_branch}")
+merge_instance_sha=$(git rev-parse "${merge_instance_branch}" || echo "-invalid")
+if [[ ${merge_instance_branch} == "${merge_instance_sha}" ]]; then
+	# merge_instance_branch is a SHA
+	merge_instance_branch_head_sha="${merge_instance_sha}"
+else
+	# branch may be out of date. We need to use the remote version
+	merge_instance_branch_head_sha=$(git rev-parse "origin/${merge_instance_branch}")
+fi
 
-pr_branch_head_sha=$(git rev-parse "${pr_branch}")
+pr_branch_head_sha=$(git rev-parse HEAD)
 
 # When testing, we use the merge-base rather than the HEAD of the target branch
+echo "Checking merge-base of HEAD ($(git rev-parse HEAD || true)) and merge branch (${merge_instance_branch_head_sha})"
 merge_base_sha=$(git merge-base HEAD "${merge_instance_branch_head_sha}")
 
 echo "Identified changes: " "${impacts_all_detected}"

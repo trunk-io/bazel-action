@@ -6,15 +6,6 @@ tempdir=$(mktemp -d)
 info_color="\033[1;36m"
 reset="\033[0m"
 
-try_rm_tempdir() {
-	if [[ -n ${tempdir+x} ]]; then
-		rm -rf "${tempdir}"
-		unset tempdir
-	fi
-}
-
-trap 'try_rm_tempdir' EXIT
-
 bazel_startup_options=""
 if [[ -n ${BAZEL_STARTUP_OPTIONS-} ]]; then
 	bazel_startup_options=$(echo "${BAZEL_STARTUP_OPTIONS}" | tr ',' ' ')
@@ -70,11 +61,17 @@ if [[ ${target_count} -eq 0 ]]; then
 	exit 0
 fi
 
-echo -e "${info_color}Running bazel test on ${target_count} targets...${reset}"
+echo -e "${info_color}Running bazel ${BAZEL_TEST_COMMAND} on ${target_count} targets...${reset}"
 
 echo
 ret=0
 _bazel "${BAZEL_TEST_COMMAND}" --target_pattern_file="${tempdir}/filtered_targets.txt" || ret=$?
+
+# Lazily cleanup tempdir since we rely on other wrappers' trap invocations
+if [[ -n ${tempdir+x} ]]; then
+	rm -rf "${tempdir}"
+	unset tempdir
+fi
 
 # Exit code 4 from bazel test means: Build successful but no tests were found even though testing was requested.
 # This is ok since this change may legitimately cause no test targets to run.
