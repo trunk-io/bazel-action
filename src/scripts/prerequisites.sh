@@ -59,7 +59,7 @@ else
 	merge_instance_branch_head_sha=$(git rev-parse "origin/${merge_instance_branch}")
 fi
 
-pr_branch_head_sha=$(git rev-parse HEAD)
+pr_branch_head_sha=$(git rev-parse "${pr_branch}")
 
 # When testing, we use the merge-base rather than the HEAD of the target branch
 echo "Checking merge-base of HEAD ($(git rev-parse HEAD || true)) and merge branch (${merge_instance_branch_head_sha})"
