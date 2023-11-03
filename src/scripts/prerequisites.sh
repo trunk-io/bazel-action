@@ -10,7 +10,7 @@ fetchRemoteGitHistory() {
 }
 
 # PR_SETUP_BRANCH used for testing only
-pr_branch=${PR_SETUP_BRANCH:-${PR_BRANCH}}
+pr_branch=${PR_SETUP_BRANCH:-${PR_BRANCH:-HEAD}}
 
 merge_instance_branch="${TARGET_BRANCH}"
 if [[ -z ${merge_instance_branch} ]]; then
