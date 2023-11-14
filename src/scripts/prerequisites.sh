@@ -59,13 +59,16 @@ else
 	merge_instance_branch_head_sha=$(git rev-parse "origin/${merge_instance_branch}")
 fi
 
-if ! pr_branch_head_sha=$(git rev-parse "${pr_branch}"); then
-	pr_branch_head_sha=$(git rev-parse "origin/${pr_branch}")
+if ! pr_branch_upload_head_sha=$(git rev-parse "${pr_branch}"); then
+	pr_branch_upload_head_sha=$(git rev-parse "origin/${pr_branch}")
 fi
+# Testing head SHA varies because we want to use HEAD rather than github.head_ref to accurately detect targets that are actually present to be queryable/testable
+pr_branch_testing_head_sha=$(git rev-parse "HEAD")
 
 # When testing, we use the merge-base rather than the HEAD of the target branch
-echo "Checking merge-base of PR Branch (${pr_branch_head_sha}) and merge branch (${merge_instance_branch_head_sha})"
+echo "Checking testing merge-base of PR Branch (${pr_branch_testing_head_sha}) and merge branch (${merge_instance_branch_head_sha})"
 merge_base_sha=$(git merge-base HEAD "${merge_instance_branch_head_sha}")
+echo "Got merge-base: ${merge_base_sha}"
 
 echo "Identified changes: " "${impacts_all_detected}"
 
@@ -86,10 +89,11 @@ fi
 # Outputs
 if [[ -v GITHUB_OUTPUT && -f ${GITHUB_OUTPUT} ]]; then
 	# trunk-ignore-begin(shellcheck/SC2129)
-	echo "merge_instance_branch=${merge_instance_branch}" >>"${GITHUB_OUTPUT}"
-	echo "merge_instance_branch_head_sha=${merge_instance_branch_head_sha}" >>"${GITHUB_OUTPUT}"
-	echo "merge_base_sha=${merge_base_sha}" >>"${GITHUB_OUTPUT}"
-	echo "pr_branch_head_sha=${pr_branch_head_sha}" >>"${GITHUB_OUTPUT}"
+	echo "merge_instance_branch=${merge_instance_branch}" >>"${GITHUB_OUTPUT}" # NOTE(TYLER): USED BY UPLOAD
+	echo "merge_instance_branch_head_sha=${merge_instance_branch_head_sha}" >>"${GITHUB_OUTPUT}" # NOTE(TYLER): USED BY BOTH COMPUTE
+	echo "merge_base_sha=${merge_base_sha}" >>"${GITHUB_OUTPUT}" # NOTE(TYLER): USED BY TESTING COMPUTE
+	echo "pr_branch_upload_head_sha=${pr_branch_upload_head_sha}" >>"${GITHUB_OUTPUT}" # NOTE(TYLER): USED BY BOTH COMPUTE AND UPLOAD -> upload and upload compute
+	echo "pr_branch_testing_head_sha=${pr_branch_testing_head_sha}" >>"${GITHUB_OUTPUT}" # NOTE(TYLER): USED BY TESTING COMPUTE
 	echo "impacts_all_detected=${impacts_all_detected}" >>"${GITHUB_OUTPUT}"
 	echo "workspace_path=${workspace_path}" >>"${GITHUB_OUTPUT}"
 	echo "requires_default_bazel_installation=${requires_default_bazel_installation}" >>"${GITHUB_OUTPUT}"
@@ -99,7 +103,8 @@ else
 	echo "::set-output name=merge_instance_branch::${merge_instance_branch}"
 	echo "::set-output name=merge_instance_branch_head_sha::${merge_instance_branch_head_sha}"
 	echo "::set-output name=merge_base_sha::${merge_base_sha}"
-	echo "::set-output name=pr_branch_head_sha::${pr_branch_head_sha}"
+	echo "::set-output name=pr_branch_upload_head_sha::${pr_branch_upload_head_sha}"
+	echo "::set-output name=pr_branch_testing_head_sha::${pr_branch_testing_head_sha}"
 	echo "::set-output name=impacts_all_detected::${impacts_all_detected}"
 	echo "::set-output name=workspace_path::${workspace_path}"
 	echo "::set-output name=requires_default_bazel_installation::${requires_default_bazel_installation}"
