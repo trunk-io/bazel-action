@@ -89,11 +89,11 @@ fi
 # Outputs
 if [[ -v GITHUB_OUTPUT && -f ${GITHUB_OUTPUT} ]]; then
 	# trunk-ignore-begin(shellcheck/SC2129)
-	echo "merge_instance_branch=${merge_instance_branch}" >>"${GITHUB_OUTPUT}" # NOTE(TYLER): USED BY UPLOAD
-	echo "merge_instance_branch_head_sha=${merge_instance_branch_head_sha}" >>"${GITHUB_OUTPUT}" # NOTE(TYLER): USED BY BOTH COMPUTE
-	echo "merge_base_sha=${merge_base_sha}" >>"${GITHUB_OUTPUT}" # NOTE(TYLER): USED BY TESTING COMPUTE
-	echo "pr_branch_upload_head_sha=${pr_branch_upload_head_sha}" >>"${GITHUB_OUTPUT}" # NOTE(TYLER): USED BY BOTH COMPUTE AND UPLOAD -> upload and upload compute
-	echo "pr_branch_testing_head_sha=${pr_branch_testing_head_sha}" >>"${GITHUB_OUTPUT}" # NOTE(TYLER): USED BY TESTING COMPUTE
+	echo "merge_instance_branch=${merge_instance_branch}" >>"${GITHUB_OUTPUT}"
+	echo "merge_instance_branch_head_sha=${merge_instance_branch_head_sha}" >>"${GITHUB_OUTPUT}"
+	echo "merge_base_sha=${merge_base_sha}" >>"${GITHUB_OUTPUT}"
+	echo "pr_branch_upload_head_sha=${pr_branch_upload_head_sha}" >>"${GITHUB_OUTPUT}"
+	echo "pr_branch_testing_head_sha=${pr_branch_testing_head_sha}" >>"${GITHUB_OUTPUT}"
 	echo "impacts_all_detected=${impacts_all_detected}" >>"${GITHUB_OUTPUT}"
 	echo "workspace_path=${workspace_path}" >>"${GITHUB_OUTPUT}"
 	echo "requires_default_bazel_installation=${requires_default_bazel_installation}" >>"${GITHUB_OUTPUT}"
