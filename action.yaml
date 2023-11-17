@@ -114,7 +114,7 @@ runs:
       env:
         MERGE_INSTANCE_BRANCH_HEAD_SHA:
           ${{ steps.prerequisites.outputs.merge_instance_branch_head_sha }}
-        PR_BRANCH_HEAD_SHA: ${{ steps.prerequisites.outputs.pr_branch_head_sha }}
+        PR_BRANCH_HEAD_SHA: ${{ steps.prerequisites.outputs.pr_branch_upload_head_sha }}
         VERBOSE: ${{ inputs.verbose }}
         WORKSPACE_PATH: ${{ steps.prerequisites.outputs.workspace_path }}
         BAZEL_PATH: ${{ inputs.bazel-path }}
@@ -132,7 +132,7 @@ runs:
         REPOSITORY: ${{ github.repository }}
         TARGET_BRANCH: ${{ steps.prerequisites.outputs.merge_instance_branch }}
         PR_NUMBER: ${{ github.event.pull_request.number }}
-        PR_SHA: ${{ steps.prerequisites.outputs.pr_branch_head_sha }}
+        PR_SHA: ${{ steps.prerequisites.outputs.pr_branch_upload_head_sha }}
         IMPACTED_TARGETS_FILE:
           ${{ steps.compute-impacted-targets-upload.outputs.impacted_targets_out }}
         IMPACTS_ALL_DETECTED: ${{ steps.prerequisites.outputs.impacts_all_detected }}
@@ -148,7 +148,7 @@ runs:
       env:
         # Use base sha instead of merge instance branch head sha for testing
         MERGE_INSTANCE_BRANCH_HEAD_SHA: ${{ steps.prerequisites.outputs.merge_base_sha }}
-        PR_BRANCH_HEAD_SHA: ${{ steps.prerequisites.outputs.pr_branch_head_sha }}
+        PR_BRANCH_HEAD_SHA: ${{ steps.prerequisites.outputs.pr_branch_testing_head_sha }}
         VERBOSE: ${{ inputs.verbose }}
         WORKSPACE_PATH: ${{ steps.prerequisites.outputs.workspace_path }}
         BAZEL_PATH: ${{ inputs.bazel-path }}
