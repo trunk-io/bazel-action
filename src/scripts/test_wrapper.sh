@@ -95,7 +95,7 @@ touch "${GITHUB_OUTPUT}"
 . "${scripts_dir}/compute_impacted_targets.sh"
 
 IMPACTED_TARGETS_FILE=$(awk -F "=" '$1=="impacted_targets_out" {print $2}' "${GITHUB_OUTPUT}")
-BAZEL_TEST_COMMAND="test"
+BAZEL_TEST_COMMAND="test --test_tag_filters=-manual"
 BAZEL_KIND_FILTER=".+_library|.+_binary|.+_test"
 BAZEL_SCOPE_FILTER=""
 BAZEL_NEGATIVE_KIND_FILTER="generated file"
