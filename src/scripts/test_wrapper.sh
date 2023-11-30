@@ -19,6 +19,8 @@ BAZEL_PATH="${BAZEL_PATH:-.trunk/tools/bazel}"
 CACHE_DIR="${HOME}/.cache/trunk/bazel-diff"
 BAZEL_STARTUP_OPTIONS=""
 
+mkdir -p "${CACHE_DIR}"
+
 #################
 ##### Utils #####
 #################
@@ -56,6 +58,11 @@ trap 'cleanup' EXIT
 #####################
 ##### Git setup #####
 #####################
+
+if ! head=$(git symbolic-ref -q --short HEAD); then
+	head=${head_hash}
+fi
+
 # If there are any uncommitted changes then commit them, we will undo this on exit.
 status="$(git status --porcelain)"
 if [[ -n ${status} ]]; then
@@ -65,10 +72,6 @@ fi
 
 # The new hash after commiting.
 head_hash=$(git rev-parse HEAD)
-
-if ! head=$(git symbolic-ref -q --short HEAD); then
-	head=${head_hash}
-fi
 
 ##############################
 ##### Call prerequisites #####
