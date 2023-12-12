@@ -30,6 +30,9 @@ fi
 echo "let targets = kind('${BAZEL_KIND_FILTER}', \$targets) in" >&3
 # trunk-ignore(shellcheck/SC2016)
 echo '$targets' >&3
+if [[ -n ${BAZEL_NEGATIVE_TAG_FILTER} ]]; then
+	echo "- attr('tags', '${BAZEL_NEGATIVE_TAG_FILTER}', \$targets)" >&3
+fi
 if [[ -n ${BAZEL_NEGATIVE_KIND_FILTER} ]]; then
 	echo "- kind('${BAZEL_NEGATIVE_KIND_FILTER}', \$targets)" >&3
 fi

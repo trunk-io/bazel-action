@@ -65,6 +65,9 @@ inputs:
     description: Negative scope filter to apply to impacted targets
     required: false
     default: //external
+  test-negative-tag-filter:
+    description: Negative tag filter to apply to impacted targets
+    required: false
 
 runs:
   using: composite
@@ -171,4 +174,5 @@ runs:
         BAZEL_SCOPE_FILTER: ${{ inputs.test-scope-filter }}
         BAZEL_NEGATIVE_KIND_FILTER: ${{ inputs.test-negative-kind-filter }}
         BAZEL_NEGATIVE_SCOPE_FILTER: ${{ inputs.test-negative-scope-filter }}
+        BAZEL_NEGATIVE_TAG_FILTER: ${{ inputs.test-negative-tag-filter }}
         CI: "true"
