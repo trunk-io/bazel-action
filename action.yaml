@@ -161,7 +161,7 @@ runs:
         VERBOSE: ${{ inputs.verbose }}
         WORKSPACE_PATH: ${{ steps.prerequisites.outputs.workspace_path }}
         BAZEL_PATH: ${{ inputs.bazel-path }}
-        BAZEL_DIFF_CMD: ${{ steps.prerequisites.outputs.bazel_diff_cmd }}
+        BAZEL_DIFF_CMD: ${{ steps.bazel-diff.outputs.bazel_diff_cmd }}
         BAZEL_STARTUP_OPTIONS: ${{ inputs.bazel-startup-options }}
 
     - name: Test Impacted Targets
