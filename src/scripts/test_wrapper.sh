@@ -113,6 +113,7 @@ BAZEL_KIND_FILTER=".+_library|.+_binary|.+_test"
 BAZEL_SCOPE_FILTER=""
 BAZEL_NEGATIVE_KIND_FILTER="generated file"
 BAZEL_NEGATIVE_SCOPE_FILTER="//external"
+BAZEL_NEGATIVE_TAG_FILTER=""
 
 ###################################
 ##### Filter and Test targets #####
