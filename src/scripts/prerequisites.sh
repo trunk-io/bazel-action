@@ -37,6 +37,11 @@ if [[ ${BAZEL_PATH} == "bazel" ]]; then
 	fi
 fi
 
+# set bazel to BAZEL_PATH if non-empty
+if [ -n "${BAZEL_PATH+x}" ]; then
+	bazel=${BAZEL_PATH}
+fi
+
 changes_count=0
 impacts_all_detected="false"
 if [[ -n ${IMPACTS_FILTERS_CHANGES+x} ]]; then
