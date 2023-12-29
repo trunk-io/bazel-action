@@ -2,6 +2,14 @@
 
 set -euo pipefail
 
+workspace_path="${WORKSPACE_PATH-}"
+if [[ -z ${workspace_path} ]]; then
+	workspace_path=$(pwd)
+fi
+
+# If we're not in the workspace, we need to run from there (e.g. for bazel info)
+cd "${workspace_path}"
+
 # Setup bazel-diff if necessary
 if command -v bazel-diff; then
 	_bazel_diff="bazel-diff"
