@@ -104,7 +104,6 @@ runs:
 
     - name: Install Bazel in PATH
       if: ${{ steps.prerequisites.outputs.requires_default_bazel_installation == 'true' }}
-      # trunk-ignore(semgrep): Trust third-party `bazelbuild` GH Action
       uses: bazelbuild/setup-bazelisk@v2
 
     - name: Setup bazel-diff

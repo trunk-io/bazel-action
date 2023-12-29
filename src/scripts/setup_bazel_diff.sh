@@ -18,7 +18,6 @@ fi
 
 # Outputs
 if [[ -v GITHUB_OUTPUT && -f ${GITHUB_OUTPUT} ]]; then
-	# trunk-ignore(shellcheck/SC2129)
 	echo "bazel_diff_cmd=${_bazel_diff}" >>"${GITHUB_OUTPUT}"
 else
 	echo "::set-output name=bazel_diff_cmd::${_bazel_diff}"
