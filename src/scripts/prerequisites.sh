@@ -6,7 +6,6 @@ set -euo pipefail
 # was a shallow vs a complete clone. The `--depth` options deepens the commit history
 # in both clone modes: https://git-scm.com/docs/fetch-options#Documentation/fetch-options.txt---depthltdepthgt
 fetchRemoteGitHistory() {
-	echo "calling fetchRemoteGitHistory with args: $*"
 	git fetch --quiet --depth=2147483647 origin "$@"
 }
 
@@ -52,7 +51,7 @@ fi
 fetchRemoteGitHistory "${merge_instance_branch}"
 fetchRemoteGitHistory "${pr_branch}" || echo "skipping PR branch fetch"
 
-merge_instance_sha=$(git rev-parse "${merge_instance_branch}" || echo "-invalid")
+merge_instance_sha=$(git rev-parse --verify -q "${merge_instance_branch}" || echo "-invalid")
 if [[ ${merge_instance_branch} == "${merge_instance_sha}" ]]; then
 	# merge_instance_branch is a SHA
 	merge_instance_branch_head_sha="${merge_instance_sha}"

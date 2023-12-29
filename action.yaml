@@ -110,6 +110,8 @@ runs:
       id: bazel-diff
       run: ${GITHUB_ACTION_PATH}/src/scripts/setup_bazel_diff.sh
       shell: bash
+      env:
+        WORKSPACE_PATH: ${{ inputs.bazel-workspace-path }}
 
     - name: Compute Impacted Targets for Uploading
       id: compute-impacted-targets-upload
