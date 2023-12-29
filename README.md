@@ -1,7 +1,7 @@
 # bazel-action
 
-** Note: This repository is currently in a Work In Progress state. We will publicize information
-about its proper usage when it is ready. **
+**Note: This repository is currently in a Work In Progress state. We will publicize information
+about its proper usage when it is ready.**
 
 Provides a GitHub Action for computing, uploading, and testing bazel targets. Functions as an
 extension to the [Trunk Merge GitHub Action](https://github.com/trunk-io/merge-action). To get beta

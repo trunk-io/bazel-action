@@ -86,6 +86,16 @@ touch "${GITHUB_OUTPUT}"
 MERGE_INSTANCE_BRANCH_HEAD_SHA=$(awk -F "=" '$1=="merge_base_sha" {print $2}' "${GITHUB_OUTPUT}")
 PR_BRANCH_HEAD_SHA=$(awk -F "=" '$1=="pr_branch_testing_head_sha" {print $2}' "${GITHUB_OUTPUT}")
 WORKSPACE_PATH=$(awk -F "=" '$1=="workspace_path" {print $2}' "${GITHUB_OUTPUT}")
+
+#################################
+##### Call setup bazel-diff #####
+#################################
+GITHUB_OUTPUT="${tempdir}/bazel_action_bazel_diff.txt"
+rm -f "${GITHUB_OUTPUT}"
+touch "${GITHUB_OUTPUT}"
+
+. "${scripts_dir}/setup_bazel_diff.sh"
+
 BAZEL_DIFF_CMD=$(awk -F "=" '$1=="bazel_diff_cmd" {print $2}' "${GITHUB_OUTPUT}")
 
 ################################
@@ -103,6 +113,7 @@ BAZEL_KIND_FILTER=".+_library|.+_binary|.+_test"
 BAZEL_SCOPE_FILTER=""
 BAZEL_NEGATIVE_KIND_FILTER="generated file"
 BAZEL_NEGATIVE_SCOPE_FILTER="//external"
+BAZEL_NEGATIVE_TAG_FILTER=""
 
 ###################################
 ##### Filter and Test targets #####

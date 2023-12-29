@@ -90,11 +90,6 @@ runs:
       # trunk-ignore(semgrep): Trust third-party action to install JQ. Source code: https://github.com/dcarbone/install-jq-action/
       uses: dcarbone/install-jq-action@v1.0.1
 
-    - name: Install Bazel in PATH
-      if: ${{ steps.prerequisites.outputs.requires_default_bazel_installation == 'true' }}
-      # trunk-ignore(semgrep): Trust third-party `bazelbuild` GH Action
-      uses: bazelbuild/setup-bazelisk@v2
-
     - name: Prerequisites
       id: prerequisites
       run: ${GITHUB_ACTION_PATH}/src/scripts/prerequisites.sh
@@ -106,6 +101,17 @@ runs:
         WORKSPACE_PATH: ${{ inputs.bazel-workspace-path }}
         BAZEL_PATH: ${{ inputs.bazel-path }}
         IMPACTS_FILTERS_CHANGES: ${{ steps.detect-changed-paths.outputs.changes }}
+
+    - name: Install Bazel in PATH
+      if: ${{ steps.prerequisites.outputs.requires_default_bazel_installation == 'true' }}
+      uses: bazelbuild/setup-bazelisk@v2
+
+    - name: Setup bazel-diff
+      id: bazel-diff
+      run: ${GITHUB_ACTION_PATH}/src/scripts/setup_bazel_diff.sh
+      shell: bash
+      env:
+        WORKSPACE_PATH: ${{ inputs.bazel-workspace-path }}
 
     - name: Compute Impacted Targets for Uploading
       id: compute-impacted-targets-upload
@@ -121,7 +127,7 @@ runs:
         VERBOSE: ${{ inputs.verbose }}
         WORKSPACE_PATH: ${{ steps.prerequisites.outputs.workspace_path }}
         BAZEL_PATH: ${{ inputs.bazel-path }}
-        BAZEL_DIFF_CMD: ${{ steps.prerequisites.outputs.bazel_diff_cmd }}
+        BAZEL_DIFF_CMD: ${{ steps.bazel-diff.outputs.bazel_diff_cmd }}
         BAZEL_STARTUP_OPTIONS: ${{ inputs.bazel-startup-options }}
 
     - name: Upload Impacted Targets
@@ -155,7 +161,7 @@ runs:
         VERBOSE: ${{ inputs.verbose }}
         WORKSPACE_PATH: ${{ steps.prerequisites.outputs.workspace_path }}
         BAZEL_PATH: ${{ inputs.bazel-path }}
-        BAZEL_DIFF_CMD: ${{ steps.prerequisites.outputs.bazel_diff_cmd }}
+        BAZEL_DIFF_CMD: ${{ steps.bazel-diff.outputs.bazel_diff_cmd }}
         BAZEL_STARTUP_OPTIONS: ${{ inputs.bazel-startup-options }}
 
     - name: Test Impacted Targets

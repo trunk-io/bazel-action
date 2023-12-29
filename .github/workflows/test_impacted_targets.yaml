@@ -95,6 +95,7 @@ jobs:
           bazel-workspace-path: ${{ github.workspace }}/tests/simple_bazel_workspace
           verbose: "true"
           bazel-startup-options: ${{ matrix.bazel-startup-options }}
+          # Overriden to be the mocked stub
           bazel-path: ${{ github.workspace }}/local-action/tests/bazel_stub.sh
           impact-all-filters-path: ${{ matrix.impact-all-filters-path }}
           upload-targets: ${{ matrix.upload-targets }}
