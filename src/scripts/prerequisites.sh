@@ -32,6 +32,7 @@ cd "${workspace_path}"
 
 requires_default_bazel_installation="false"
 if [[ ${BAZEL_PATH} == "bazel" ]]; then
+	# default case from action params
 	if ! command -v bazel; then
 		requires_default_bazel_installation="true"
 	fi
@@ -72,20 +73,6 @@ echo "Got merge-base: ${merge_base_sha}"
 
 echo "Identified changes: " "${impacts_all_detected}"
 
-# Setup bazel-diff if necessary
-if command -v bazel-diff; then
-	_bazel_diff="bazel-diff"
-else
-	_java=$(bazel info java-home)/bin/java
-
-	# Install the bazel-diff JAR. Avoid cloning the repo, as there will be conflicting WORKSPACES.
-	curl --retry 5 -Lo bazel-diff.jar https://github.com/Tinder/bazel-diff/releases/latest/download/bazel-diff_deploy.jar
-	"${_java}" -jar bazel-diff.jar -V
-	bazel version # Does not require running with startup options.
-
-	_bazel_diff="${_java} -jar ${workspace_path}/bazel-diff.jar"
-fi
-
 # Outputs
 if [[ -v GITHUB_OUTPUT && -f ${GITHUB_OUTPUT} ]]; then
 	# trunk-ignore-begin(shellcheck/SC2129)
@@ -97,7 +84,6 @@ if [[ -v GITHUB_OUTPUT && -f ${GITHUB_OUTPUT} ]]; then
 	echo "impacts_all_detected=${impacts_all_detected}" >>"${GITHUB_OUTPUT}"
 	echo "workspace_path=${workspace_path}" >>"${GITHUB_OUTPUT}"
 	echo "requires_default_bazel_installation=${requires_default_bazel_installation}" >>"${GITHUB_OUTPUT}"
-	echo "bazel_diff_cmd=${_bazel_diff}" >>"${GITHUB_OUTPUT}"
 	# trunk-ignore-end(shellcheck/SC2129)
 else
 	echo "::set-output name=merge_instance_branch::${merge_instance_branch}"
@@ -108,5 +94,4 @@ else
 	echo "::set-output name=impacts_all_detected::${impacts_all_detected}"
 	echo "::set-output name=workspace_path::${workspace_path}"
 	echo "::set-output name=requires_default_bazel_installation::${requires_default_bazel_installation}"
-	echo "::set-output name=bazel_diff_cmd::${_bazel_diff}"
 fi
