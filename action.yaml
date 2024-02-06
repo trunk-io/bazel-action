@@ -175,7 +175,7 @@ runs:
       if: inputs.test-targets == 'true'
       id: test-impacted-targets
       run: |
-        if [[ -z ${{ inputs.enable-trunk-ci-debugger }} ]]; then
+        if [[ -z "${{ inputs.enable-trunk-ci-debugger }}" ]]; then
           ${GITHUB_ACTION_PATH}/src/scripts/test_impacted_targets.sh
         else
           ${GITHUB_ACTION_PATH}/src/scripts/test_impacted_targets.sh
