@@ -197,7 +197,7 @@ runs:
       uses: trunk-io/breakpoint@v1
       with:
         breakpoint-id: ${{ inputs.trunk-ci-debugger-breakpoint-name }}
-        trunk-token:  ${{ inputs.trunk-token }}
+        trunk-token: ${{ inputs.trunk-token }}
         run: ${{ github.action_path }}/src/scripts/test_impacted_targets.sh
         working-directory: ${{ steps.prerequisites.outputs.workspace_path }}
         shell: bash
