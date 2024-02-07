@@ -198,7 +198,7 @@ runs:
       with:
         breakpoint-id: ${{ inputs.trunk-ci-debugger-breakpoint-name }}
         trunk-token: ${{ env.TRUNK_TOKEN }}
-        run: ${{ env.GITHUB_ACTION_PATH }}/src/scripts/test_impacted_targets.sh
+        run: ${{ github.action_path }}/src/scripts/test_impacted_targets.sh
         working-directory: ${{ steps.prerequisites.outputs.workspace_path }}
         shell: bash
       env:
