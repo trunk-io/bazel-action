@@ -173,7 +173,7 @@ runs:
         BAZEL_STARTUP_OPTIONS: ${{ inputs.bazel-startup-options }}
 
     - name: Test Impacted Targets
-      if: inputs.test-targets == 'true' && !${{ inputs.enable-trunk-ci-debugger }}
+      if: inputs.test-targets == 'true' && !inputs.enable-trunk-ci-debugger
       id: test-impacted-targets
       run: ${GITHUB_ACTION_PATH}/src/scripts/test_impacted_targets.sh
       working-directory: ${{ steps.prerequisites.outputs.workspace_path }}
@@ -192,7 +192,7 @@ runs:
         CI: "true"
 
     - name: Test Impacted Targets (with debugger)
-      if: inputs.test-targets == 'true' && ${{ inputs.enable-trunk-ci-debugger }}
+      if: inputs.test-targets == 'true' && inputs.enable-trunk-ci-debugger
       id: test-impacted-targets-dbg
       uses: trunk-io/breakpoint@v1
       with:
