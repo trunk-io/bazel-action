@@ -76,6 +76,9 @@ inputs:
     description: Name of the trunk breakpoint to apply
     required: false
     default: my-breakpoint
+  trunk-token:
+    description: trunk api token, required to use CI debugger
+    required: false
 
 runs:
   using: composite
@@ -197,7 +200,7 @@ runs:
       uses: trunk-io/breakpoint@v1
       with:
         breakpoint-id: ${{ inputs.trunk-ci-debugger-breakpoint-name }}
-        trunk-token: ${{ env.TRUNK_TOKEN }}
+        trunk-token:  ${{ inputs.trunk-token }}
         run: ${{ github.action_path }}/src/scripts/test_impacted_targets.sh
         working-directory: ${{ steps.prerequisites.outputs.workspace_path }}
         shell: bash
