@@ -71,6 +71,7 @@ inputs:
   enable-trunk-ci-debugger:
     description: Enable support for the Trunk ci debugger (https://docs.trunk.io/ci-debugger)
     required: false
+    default: "false"
   trunk-ci-debugger-breakpoint-name:
     description: Name of the trunk breakpoint to apply
     required: false
@@ -172,16 +173,33 @@ runs:
         BAZEL_STARTUP_OPTIONS: ${{ inputs.bazel-startup-options }}
 
     - name: Test Impacted Targets
-      if: inputs.test-targets == 'true'
+      if: inputs.test-targets == 'true' && ${{ inputs.enable-trunk-ci-debugger }} != 'true'
       id: test-impacted-targets
-      run: |
-        if [[ -z "${{ inputs.enable-trunk-ci-debugger }}" ]]; then
-          ${GITHUB_ACTION_PATH}/src/scripts/test_impacted_targets.sh
-        else
-          ${GITHUB_ACTION_PATH}/src/scripts/test_impacted_targets.sh
-        fi
+      run: ${GITHUB_ACTION_PATH}/src/scripts/test_impacted_targets.sh
       working-directory: ${{ steps.prerequisites.outputs.workspace_path }}
       shell: bash
+      env:
+        IMPACTED_TARGETS_FILE:
+          ${{ steps.compute-impacted-targets-test.outputs.impacted_targets_out }}
+        BAZEL_PATH: ${{ inputs.bazel-path }}
+        BAZEL_TEST_COMMAND: ${{ inputs.bazel-test-command }}
+        BAZEL_STARTUP_OPTIONS: ${{ inputs.bazel-startup-options }}
+        BAZEL_KIND_FILTER: ${{ inputs.test-kind-filter }}
+        BAZEL_SCOPE_FILTER: ${{ inputs.test-scope-filter }}
+        BAZEL_NEGATIVE_KIND_FILTER: ${{ inputs.test-negative-kind-filter }}
+        BAZEL_NEGATIVE_SCOPE_FILTER: ${{ inputs.test-negative-scope-filter }}
+        BAZEL_NEGATIVE_TAG_FILTER: ${{ inputs.test-negative-tag-filter }}
+        CI: "true"
+
+    - name: Test Impacted Targets (with debugger)
+      if: inputs.test-targets == 'true' && ${{ inputs.enable-trunk-ci-debugger }} == 'true'
+      id: test-impacted-targets
+      uses: trunk-io/breakpoint@v1
+      with:
+        breakpoint-id: ${{ inputs.trunk-ci-debugger-breakpoint-name }}
+        run: ${GITHUB_ACTION_PATH}/src/scripts/test_impacted_targets.sh
+        working-directory: ${{ steps.prerequisites.outputs.workspace_path }}
+        shell: bash
       env:
         IMPACTED_TARGETS_FILE:
           ${{ steps.compute-impacted-targets-test.outputs.impacted_targets_out }}
