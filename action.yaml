@@ -76,9 +76,6 @@ inputs:
     description: Name of the trunk breakpoint to apply
     required: false
     default: my-breakpoint
-  trunk-token:
-    description: trunk api token, required to use CI debugger
-    required: false
 
 runs:
   using: composite
