@@ -193,7 +193,7 @@ runs:
 
     - name: Test Impacted Targets (with debugger)
       if: inputs.test-targets == 'true' && ${{ inputs.enable-trunk-ci-debugger }} == 'true'
-      id: test-impacted-targets
+      id: test-impacted-targets-dbg
       uses: trunk-io/breakpoint@v1
       with:
         breakpoint-id: ${{ inputs.trunk-ci-debugger-breakpoint-name }}
