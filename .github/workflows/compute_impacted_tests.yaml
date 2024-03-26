@@ -34,6 +34,7 @@ jobs:
           breakpoint-id: trunk-bazel-action
           run: ./src/scripts/compute_impacted_targets.sh
           trunk-token: ${{ secrets.TRUNK_DEBUGGER_TOKEN }}
+          org: trunk-staging-org
           shell: bash
         env:
           MERGE_INSTANCE_BRANCH: do_not_delete/stable_test_branch
