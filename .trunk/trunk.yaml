@@ -1,14 +1,17 @@
 version: 0.1
 cli:
-  version: 1.16.2
+  version: 1.21.0
+api:
+  address: api.trunk-staging.io:8443
+  org: trunk-staging-org
 plugins:
   sources:
     - id: trunk
-      ref: v1.2.5
+      ref: v1.4.5
       uri: https://github.com/trunk-io/plugins
     - id: configs
       uri: https://github.com/trunk-io/configs
-      ref: v0.0.7
+      ref: v1.0.4
 runtimes:
   enabled:
     - node@18.12.1
