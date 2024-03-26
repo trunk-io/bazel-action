@@ -46,9 +46,9 @@ _bazel() {
 
 _bazel_diff() {
 	if [[ -n ${VERBOSE-} ]]; then
-		${BAZEL_DIFF_CMD} "$@" --verbose
+		${BAZEL_DIFF_CMD} "$@" --verbose "${BAZEL_DIFF_ARGS}"
 	else
-		${BAZEL_DIFF_CMD} "$@"
+		${BAZEL_DIFF_CMD} "$@" "${BAZEL_DIFF_ARGS}"
 	fi
 }
 
