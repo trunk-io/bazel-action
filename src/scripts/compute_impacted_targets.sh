@@ -46,12 +46,9 @@ _bazel() {
 
 _bazel_diff() {
 	if [[ -n ${VERBOSE-} ]]; then
-		echo "calling bazel diff" # TODO: REMOVE
-		# trunk-ignore(shellcheck)
-		${BAZEL_DIFF_CMD} "$@" --verbose ${BAZEL_DIFF_ARGS}
+		${BAZEL_DIFF_CMD} "$@" --verbose
 	else
-		# trunk-ignore(shellcheck)
-		${BAZEL_DIFF_CMD} "$@" ${BAZEL_DIFF_ARGS}
+		${BAZEL_DIFF_CMD} "$@"
 	fi
 }
 
@@ -81,7 +78,7 @@ generate_hashes() {
 		--bazelPath "${BAZEL_PATH}" \
 		-so="${bazel_startup_options}" \
 		--workspacePath "${WORKSPACE_PATH}" \
-		--bazelCommandOptions "--noshow_progress" \
+		--bazelCommandOptions "--noshow_progress" "${BAZEL_COMMAND_OPTIONS}" \
 		"$1"
 }
 

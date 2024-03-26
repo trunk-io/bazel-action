@@ -51,7 +51,7 @@ inputs:
     required: false
     default: test
   bazel-diff-command-options:
-    description: Additional args to append to the bazel diff command.
+    description: Additional args to append to the bazel diff bazelCommandOptions flag.
     required: false
     default: ""
   test-kind-filter:
@@ -140,7 +140,7 @@ runs:
         WORKSPACE_PATH: ${{ steps.prerequisites.outputs.workspace_path }}
         BAZEL_PATH: ${{ inputs.bazel-path }}
         BAZEL_DIFF_CMD: ${{ steps.bazel-diff.outputs.bazel_diff_cmd }}
-        BAZEL_DIFF_ARGS: ${{ inputs.bazel-diff-args }}
+        BAZEL_COMMAND_OPTIONS: ${{ inputs.bazel-diff-command-options }}
         BAZEL_STARTUP_OPTIONS: ${{ inputs.bazel-startup-options }}
 
     - name: Upload Impacted Targets
@@ -175,7 +175,7 @@ runs:
         WORKSPACE_PATH: ${{ steps.prerequisites.outputs.workspace_path }}
         BAZEL_PATH: ${{ inputs.bazel-path }}
         BAZEL_DIFF_CMD: ${{ steps.bazel-diff.outputs.bazel_diff_cmd }}
-        BAZEL_DIFF_ARGS: ${{ inputs.bazel-diff-command-options }}
+        BAZEL_COMMAND_OPTIONS: ${{ inputs.bazel-diff-command-options }}
         BAZEL_STARTUP_OPTIONS: ${{ inputs.bazel-startup-options }}
 
     - name: Test Impacted Targets
