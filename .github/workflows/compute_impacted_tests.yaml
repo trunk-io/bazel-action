@@ -46,7 +46,7 @@ jobs:
           BAZEL_STARTUP_OPTIONS: --host_jvm_args=-Xmx12G,--block_for_lock,--client_debug
           BAZEL_PATH: bazel
           BAZEL_DIFF_CMD: ${{ steps.bazel-diff.outputs.bazel_diff_cmd }}
-          BAZEL_COMMAND_OPTIONS: --remote_cache=
+          BAZEL_DIFF_COMMAND_OPTIONS: --remote_cache=
           TRUNK_API_ADDRESS: api.trunk-staging.io:8443
 
       - name: Validate Impacted Targets Computation
