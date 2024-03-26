@@ -50,7 +50,7 @@ inputs:
     description: The command to run against bazel when running tests.
     required: false
     default: test
-  bazel-diff-args:
+  bazel-diff-command-options:
     description: Additional args to append to the bazel diff command.
     required: false
     default: ""
@@ -140,7 +140,7 @@ runs:
         WORKSPACE_PATH: ${{ steps.prerequisites.outputs.workspace_path }}
         BAZEL_PATH: ${{ inputs.bazel-path }}
         BAZEL_DIFF_CMD: ${{ steps.bazel-diff.outputs.bazel_diff_cmd }}
-        BAZEL_DIFF_ARGS: ${{ inputs.bazel-diff-args }}
+        BAZEL_DIFF_COMMAND_OPTIONS: ${{ inputs.bazel-diff-args }}
         BAZEL_STARTUP_OPTIONS: ${{ inputs.bazel-startup-options }}
 
     - name: Upload Impacted Targets
@@ -175,7 +175,7 @@ runs:
         WORKSPACE_PATH: ${{ steps.prerequisites.outputs.workspace_path }}
         BAZEL_PATH: ${{ inputs.bazel-path }}
         BAZEL_DIFF_CMD: ${{ steps.bazel-diff.outputs.bazel_diff_cmd }}
-        BAZEL_DIFF_ARGS: ${{ inputs.bazel-diff-args }}
+        BAZEL_DIFF_COMMAND_OPTIONS: ${{ inputs.bazel-diff-command-options }}
         BAZEL_STARTUP_OPTIONS: ${{ inputs.bazel-startup-options }}
 
     - name: Test Impacted Targets

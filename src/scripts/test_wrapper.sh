@@ -18,7 +18,7 @@ TARGET_BRANCH=main
 BAZEL_PATH="${BAZEL_PATH:-.trunk/tools/bazel}"
 CACHE_DIR="${HOME}/.cache/trunk/bazel-diff"
 BAZEL_STARTUP_OPTIONS=""
-BAZEL_DIFF_ARGS=""
+BAZEL_DIFF_COMMAND_OPTIONS=""
 
 mkdir -p "${CACHE_DIR}"
 
