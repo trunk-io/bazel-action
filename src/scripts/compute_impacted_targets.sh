@@ -46,11 +46,12 @@ _bazel() {
 
 _bazel_diff() {
 	if [[ -n ${VERBOSE-} ]]; then
+		echo "calling bazel diff" # TODO: REMOVE
 		# trunk-ignore(shellcheck)
-		${BAZEL_DIFF_CMD} "$@" --verbose ${BAZEL_DIFF_ARGS}
+		${BAZEL_DIFF_CMD} ${BAZEL_DIFF_ARGS} "$@" --verbose
 	else
 		# trunk-ignore(shellcheck)
-		${BAZEL_DIFF_CMD} "$@" ${BAZEL_DIFF_ARGS}
+		${BAZEL_DIFF_CMD} ${BAZEL_DIFF_ARGS} "$@"
 	fi
 }
 
