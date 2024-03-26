@@ -41,7 +41,7 @@ jobs:
           BAZEL_STARTUP_OPTIONS: --host_jvm_args=-Xmx12G,--block_for_lock,--client_debug
           BAZEL_PATH: bazel
           BAZEL_DIFF_CMD: ${{ steps.bazel-diff.outputs.bazel_diff_cmd }}
-          BAZEL_DIFF_ARGS: --bazelCommandOptions='--remote_cache=""'
+          BAZEL_DIFF_ARGS: --bazelCommandOptions=--remote_cache=""
 
       - name: Validate Impacted Targets Computation
         shell: bash
