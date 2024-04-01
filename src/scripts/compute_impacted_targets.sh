@@ -78,7 +78,7 @@ generate_hashes() {
 		--bazelPath "${BAZEL_PATH}" \
 		-so="${bazel_startup_options}" \
 		--workspacePath "${WORKSPACE_PATH}" \
-		--bazelCommandOptions "--noshow_progress" \
+		--bazelCommandOptions "--noshow_progress ${BAZEL_DIFF_COMMAND_OPTIONS}" \
 		"$1"
 }
 

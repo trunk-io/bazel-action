@@ -29,8 +29,13 @@ jobs:
 
       - name: Compute Impacted Targets
         id: compute
-        run: ./src/scripts/compute_impacted_targets.sh
-        shell: bash
+        uses: trunk-io/breakpoint@v1.3.0
+        with:
+          breakpoint-id: trunk-bazel-action
+          run: ./src/scripts/compute_impacted_targets.sh
+          trunk-token: ${{ secrets.TRUNK_DEBUGGER_TOKEN }}
+          org: trunk-staging-org
+          shell: bash
         env:
           MERGE_INSTANCE_BRANCH: do_not_delete/stable_test_branch
           MERGE_INSTANCE_BRANCH_HEAD_SHA: 3e8b2a57e0f3ad7b63cc487eae576c25b84b653b
@@ -41,6 +46,8 @@ jobs:
           BAZEL_STARTUP_OPTIONS: --host_jvm_args=-Xmx12G,--block_for_lock,--client_debug
           BAZEL_PATH: bazel
           BAZEL_DIFF_CMD: ${{ steps.bazel-diff.outputs.bazel_diff_cmd }}
+          BAZEL_DIFF_COMMAND_OPTIONS: --remote_cache=
+          TRUNK_API_ADDRESS: api.trunk-staging.io:8443
 
       - name: Validate Impacted Targets Computation
         shell: bash
