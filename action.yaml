@@ -231,7 +231,7 @@ runs:
     - name: Test All Targets
       if: inputs.force-all-tests != 'false'
       id: test-all-targets
-      run: ${{ inputs.bazel-path }} ${{ inputs.bazel-test-command }}
+      run: ${{ inputs.bazel-path }} ${{ inputs.bazel-test-command }} //...
       working-directory: ${{ steps.prerequisites.outputs.workspace_path }}
       shell: bash
       env:
