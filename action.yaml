@@ -80,6 +80,10 @@ inputs:
     description: Name of the trunk breakpoint to apply
     required: false
     default: my-breakpoint
+  force-all-tests:
+    description: Skip testing for diffs and test all
+    required: false
+    default: false
 
 runs:
   using: composite
@@ -165,7 +169,7 @@ runs:
     - name: Compute Impacted Targets for Testing
       id: compute-impacted-targets-test
       run: ${GITHUB_ACTION_PATH}/src/scripts/compute_impacted_targets.sh
-      if: inputs.test-targets == 'true'
+      if: inputs.test-targets == 'true' && inputs.force-all-tests == 'false'
       shell: bash
       env:
         # Use base sha instead of merge instance branch head sha for testing
@@ -179,7 +183,9 @@ runs:
         BAZEL_STARTUP_OPTIONS: ${{ inputs.bazel-startup-options }}
 
     - name: Test Impacted Targets
-      if: inputs.test-targets == 'true' && !inputs.enable-trunk-ci-debugger
+      if:
+        inputs.test-targets == 'true' && !inputs.enable-trunk-ci-debugger  && inputs.force-all-tests
+        == 'false'
       id: test-impacted-targets
       run: ${GITHUB_ACTION_PATH}/src/scripts/test_impacted_targets.sh
       working-directory: ${{ steps.prerequisites.outputs.workspace_path }}
@@ -198,7 +204,9 @@ runs:
         CI: "true"
 
     - name: Test Impacted Targets (with debugger)
-      if: inputs.test-targets == 'true' && inputs.enable-trunk-ci-debugger
+      if:
+        inputs.test-targets == 'true' && inputs.enable-trunk-ci-debugger && inputs.force-all-tests
+        == 'false'
       id: test-impacted-targets-dbg
       uses: trunk-io/breakpoint@v1
       with:
@@ -218,4 +226,13 @@ runs:
         BAZEL_NEGATIVE_KIND_FILTER: ${{ inputs.test-negative-kind-filter }}
         BAZEL_NEGATIVE_SCOPE_FILTER: ${{ inputs.test-negative-scope-filter }}
         BAZEL_NEGATIVE_TAG_FILTER: ${{ inputs.test-negative-tag-filter }}
+        CI: "true"
+
+    - name: Test All Targets
+      if: inputs.force-all-tests != 'false'
+      id: test-all-targets
+      run: ${{ inputs.bazel-path }} ${{ inputs.bazel-test-command }}
+      working-directory: ${{ steps.prerequisites.outputs.workspace_path }}
+      shell: bash
+      env:
         CI: "true"
