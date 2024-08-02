@@ -133,6 +133,8 @@ else
 	fi
 	logIfVerbose "Hashes for upstream don't exist in cache, changing branch and computing..."
 	git checkout -q "${MERGE_INSTANCE_BRANCH_HEAD_SHA}"
+	git clean -dfx -f --exclude=".trunk" --exclude="bazel-diff.jar" .
+	git submodule update --recursive
 	generate_hashes "${merge_instance_branch_out}"
 	try_checkout_head
 fi
@@ -148,6 +150,8 @@ fi
 
 # Reset back to the original branch
 git checkout -q "${original_branch}"
+git clean -dfx -f --exclude=".trunk" --exclude="bazel-diff.jar" --exclude="${MERGE_INSTANCE_BRANCH_HEAD_SHA}" .
+git submodule update --recursive
 
 # Compute impacted targets
 _bazel_diff get-impacted-targets --startingHashes="${merge_instance_branch_out}" --finalHashes="${merge_instance_with_pr_branch_out}" --output="${impacted_targets_out}"
