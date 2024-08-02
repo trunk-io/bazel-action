@@ -146,13 +146,13 @@ else
 	logIfVerbose "Hashes for merge result don't exist in cache, merging and computing..."
 	git -c "user.name=Trunk Actions" -c "user.email=actions@trunk.io" merge --squash "${original_branch}"
 	git checkout -q "${original_branch}"
-	git clean -dfx -f --exclude=".trunk" --exclude="bazel-diff.jar" --exclude="${MERGE_INSTANCE_BRANCH_HEAD_SHA}" .
+	git clean -dfx -f --exclude=".trunk" --exclude="bazel-diff.jar" --exclude="${MERGE_INSTANCE_BRANCH_HEAD_SHA}" --exclude="bazel-" .
 	generate_hashes "${merge_instance_with_pr_branch_out}"
 fi
 
 # Reset back to the original branch
 git checkout -q "${original_branch}"
-git clean -dfx -f --exclude=".trunk" --exclude="bazel-diff.jar" --exclude="${MERGE_INSTANCE_BRANCH_HEAD_SHA}" --exclude="${PR_BRANCH_HEAD_SHA}_${MERGE_INSTANCE_BRANCH_HEAD_SHA}" .
+git clean -dfx -f --exclude=".trunk" --exclude="bazel-diff.jar" --exclude="${MERGE_INSTANCE_BRANCH_HEAD_SHA}" --exclude="${PR_BRANCH_HEAD_SHA}_${MERGE_INSTANCE_BRANCH_HEAD_SHA}" --exclude="bazel-" .
 git submodule update --recursive
 
 # Compute impacted targets
