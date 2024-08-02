@@ -103,6 +103,8 @@ if [[ -n ${VERBOSE-} ]]; then
 	echo "Merge Instance Depth= ${merge_instance_depth}"
 
 	git checkout -q "${MERGE_INSTANCE_BRANCH_HEAD_SHA}"
+	git clean -dfx -f --exclude=".trunk" --exclude="tests" --exclude="local-action" --exclude="user.bazelrc" .
+	git submodule update --recursive
 	git log -n "${merge_instance_depth}" --oneline | cat
 
 	# Find the number of commits between the merge base and the PR's HEAD
@@ -110,6 +112,8 @@ if [[ -n ${VERBOSE-} ]]; then
 	echo "PR Depth= ${pr_depth}"
 
 	git checkout -q "${original_branch}"
+	git clean -dfx -f --exclude=".trunk" --exclude="tests" --exclude="local-action" --exclude="user.bazelrc" .
+	git submodule update --recursive
 	git log -n "${pr_depth}" --oneline | cat
 fi
 
@@ -133,6 +137,8 @@ else
 	fi
 	logIfVerbose "Hashes for upstream don't exist in cache, changing branch and computing..."
 	git checkout -q "${MERGE_INSTANCE_BRANCH_HEAD_SHA}"
+	git clean -dfx -f --exclude=".trunk" --exclude="tests" --exclude="bazel-diff.jar" --exclude="user.bazelrc" --exclude="local-action" .
+	git submodule update --recursive
 	generate_hashes "${merge_instance_branch_out}"
 	try_checkout_head
 fi
@@ -143,11 +149,15 @@ if [[ -e ${merge_instance_with_pr_branch_out} ]]; then
 else
 	logIfVerbose "Hashes for merge result don't exist in cache, merging and computing..."
 	git -c "user.name=Trunk Actions" -c "user.email=actions@trunk.io" merge --squash "${original_branch}"
+	git clean -dfx -f --exclude=".trunk" --exclude="tests" --exclude="bazel-diff.jar" --exclude="${MERGE_INSTANCE_BRANCH_HEAD_SHA}" --exclude="bazel-*" --exclude="user.bazelrc" --exclude="local-action" .
+	git submodule update --recursive
 	generate_hashes "${merge_instance_with_pr_branch_out}"
 fi
 
 # Reset back to the original branch
 git checkout -q "${original_branch}"
+git clean -dfx -f --exclude=".trunk" --exclude="tests" --exclude="bazel-diff.jar" --exclude="${MERGE_INSTANCE_BRANCH_HEAD_SHA}" --exclude="${PR_BRANCH_HEAD_SHA}_${MERGE_INSTANCE_BRANCH_HEAD_SHA}" --exclude="user.bazelrc" --exclude="bazel-*" --exclude="local-action" .
+git submodule update --recursive
 
 # Compute impacted targets
 _bazel_diff get-impacted-targets --startingHashes="${merge_instance_branch_out}" --finalHashes="${merge_instance_with_pr_branch_out}" --output="${impacted_targets_out}"
