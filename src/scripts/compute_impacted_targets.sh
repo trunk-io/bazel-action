@@ -103,6 +103,8 @@ if [[ -n ${VERBOSE-} ]]; then
 	echo "Merge Instance Depth= ${merge_instance_depth}"
 
 	git checkout -q "${MERGE_INSTANCE_BRANCH_HEAD_SHA}"
+	git clean -dfx -f --exclude=".trunk" .
+	git submodule update --recursive
 	git log -n "${merge_instance_depth}" --oneline | cat
 
 	# Find the number of commits between the merge base and the PR's HEAD
@@ -110,6 +112,8 @@ if [[ -n ${VERBOSE-} ]]; then
 	echo "PR Depth= ${pr_depth}"
 
 	git checkout -q "${original_branch}"
+	git clean -dfx -f --exclude=".trunk" .
+	git submodule update --recursive
 	git log -n "${pr_depth}" --oneline | cat
 fi
 
