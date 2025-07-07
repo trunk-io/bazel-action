@@ -73,6 +73,16 @@ echo "Got merge-base: ${merge_base_sha}"
 
 echo "Identified changes: " "${impacts_all_detected}"
 
+# donotland
+echo "debug: merge_instance_branch: ${merge_instance_branch}"
+echo "debug: merge_instance_branch_head_sha: ${merge_instance_branch_head_sha}"
+echo "debug: merge_base_sha: ${merge_base_sha}"
+echo "debug: pr_branch_upload_head_sha: ${pr_branch_upload_head_sha}"
+echo "debug: pr_branch_testing_head_sha: ${pr_branch_testing_head_sha}"
+echo "debug: impacts_all_detected: ${impacts_all_detected}"
+echo "debug: workspace_path: ${workspace_path}"
+echo "debug: requires_default_bazel_installation: ${requires_default_bazel_installation}"
+
 # Outputs
 if [[ -v GITHUB_OUTPUT && -f ${GITHUB_OUTPUT} ]]; then
 	# trunk-ignore-begin(shellcheck/SC2129)
