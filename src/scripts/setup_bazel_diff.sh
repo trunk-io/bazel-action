@@ -11,7 +11,7 @@ fi
 cd "${workspace_path}"
 
 try_bazel_diff() {
-  curl --retry 5 -Lo bazel-diff.jar $1 --fail && _java -jar bazel-diff.jar -V
+  curl --retry 5 -Lo bazel-diff.jar $1 --fail && "${_java}" -jar bazel-diff.jar -V
 }
 
 # Setup bazel-diff if necessary
