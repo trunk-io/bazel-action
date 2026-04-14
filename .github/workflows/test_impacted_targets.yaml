@@ -84,7 +84,7 @@ jobs:
       # We will override bazel for purposes of asserting that tests are run, but we still need to invoke it and have it in the PATH for computing targets
       - name: Setup Bazel
         # trunk-ignore(semgrep): Trust third-party `bazelbuild` GH Action
-        uses: bazelbuild/setup-bazelisk@v2
+        uses: bazelbuild/setup-bazelisk@v3
 
       - name: Test impacted targets
         id: test
