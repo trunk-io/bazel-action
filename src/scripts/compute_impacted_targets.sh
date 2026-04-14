@@ -160,7 +160,7 @@ git clean -dfx -f --exclude=".trunk" --exclude="tests" --exclude="bazel-diff.jar
 git submodule update --recursive
 
 # Compute impacted targets
-_bazel_diff get-impacted-targets --startingHashes="${merge_instance_branch_out}" --finalHashes="${merge_instance_with_pr_branch_out}" --output="${impacted_targets_out}"
+_bazel_diff get-impacted-targets --startingHashes="${merge_instance_branch_out}" --finalHashes="${merge_instance_with_pr_branch_out}" --workspacePath="${WORKSPACE_PATH}" --output="${impacted_targets_out}"
 
 num_impacted_targets=$(wc -l <"${impacted_targets_out}")
 echo "Computed ${num_impacted_targets} targets for sha ${PR_BRANCH_HEAD_SHA}"
