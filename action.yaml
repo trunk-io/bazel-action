@@ -72,6 +72,9 @@ inputs:
   test-negative-tag-filter:
     description: Negative tag filter to apply to impacted targets
     required: false
+  force-test-targets:
+    description: Skip testing for diffs and instead test specified target
+    required: false
 
 runs:
   using: composite
@@ -157,7 +160,7 @@ runs:
     - name: Compute Impacted Targets for Testing
       id: compute-impacted-targets-test
       run: ${GITHUB_ACTION_PATH}/src/scripts/compute_impacted_targets.sh
-      if: inputs.test-targets == 'true'
+      if: inputs.test-targets == 'true' && inputs.force-test-targets == ''
       shell: bash
       env:
         # Use base sha instead of merge instance branch head sha for testing
@@ -171,7 +174,7 @@ runs:
         BAZEL_STARTUP_OPTIONS: ${{ inputs.bazel-startup-options }}
 
     - name: Test Impacted Targets
-      if: inputs.test-targets == 'true'
+      if: inputs.test-targets == 'true' && inputs.force-test-targets == ''
       id: test-impacted-targets
       run: ${GITHUB_ACTION_PATH}/src/scripts/test_impacted_targets.sh
       working-directory: ${{ steps.prerequisites.outputs.workspace_path }}
