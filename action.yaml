@@ -3,10 +3,23 @@ author: trunk.io
 description: Trunk.io Github Action to Compute, Upload, and Test Impacted Targets
 
 inputs:
+  auth:
+    description: >-
+      How the upload authenticates. `trunk-token` (default) uses the trunk-token input.
+      `github-actions` logs in with the run's own GitHub credential through trunk-io/login: no Trunk
+      secret, pull requests from forks included. It needs `permissions: id-token: write` on the job,
+      and for fork PRs, Fork PR CI access turned on for the repository in Trunk.
+    required: false
+    default: trunk-token
+  trunk-api-url:
+    description: >-
+      The Trunk API root for `auth: github-actions`. Change it only for Trunk's staging environment.
+    required: false
+    default: https://api.trunk.io/v2
   trunk-token:
     description:
       Repo API token used for authentication. Can be found at app.trunk.io. Required if
-      upload-targets
+      upload-targets, unless auth is github-actions
     required: false
   target-branch:
     description:
@@ -76,6 +89,13 @@ inputs:
 runs:
   using: composite
   steps:
+    - name: Validate auth
+      if: ${{ inputs.auth != 'trunk-token' && inputs.auth != 'github-actions' }}
+      shell: bash
+      run: |
+        echo "::error::auth must be trunk-token or github-actions"
+        exit 1
+
     - name: Validate inputs
       id: validate-inputs
       if: inputs.upload-targets != 'true' && inputs.test-targets != 'true'
@@ -102,6 +122,7 @@ runs:
         DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
         TARGET_BRANCH: ${{ inputs.target-branch }}
         PR_BRANCH: ${{ github.head_ref }}
+        PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
         WORKSPACE_PATH: ${{ inputs.bazel-workspace-path }}
         BAZEL_PATH: ${{ inputs.bazel-path }}
         IMPACTS_FILTERS_CHANGES: ${{ steps.detect-changed-paths.outputs.changes }}
@@ -136,7 +157,7 @@ runs:
         BAZEL_STARTUP_OPTIONS: ${{ inputs.bazel-startup-options }}
 
     - name: Upload Impacted Targets
-      if: inputs.upload-targets == 'true'
+      if: inputs.upload-targets == 'true' && inputs.auth != 'github-actions'
       run: ${GITHUB_ACTION_PATH}/src/scripts/upload_impacted_targets.sh
       shell: bash
       continue-on-error: true
@@ -146,6 +167,32 @@ runs:
         REPOSITORY: ${{ github.repository }}
         TARGET_BRANCH: ${{ steps.prerequisites.outputs.merge_instance_branch }}
         PR_NUMBER: ${{ github.event.pull_request.number }}
+        PR_SHA: ${{ steps.prerequisites.outputs.pr_branch_upload_head_sha }}
+        IMPACTED_TARGETS_FILE:
+          ${{ steps.compute-impacted-targets-upload.outputs.impacted_targets_out }}
+        IMPACTS_ALL_DETECTED: ${{ steps.prerequisites.outputs.impacts_all_detected }}
+
+    - name: Log in to Trunk
+      id: login
+      if: inputs.upload-targets == 'true' && inputs.auth == 'github-actions'
+      continue-on-error: true
+      uses: trunk-io/login@dd43b5c040326ee204a3d1f18f5522a717466ce2 # main; move to v1 once tagged
+      with:
+        api-url: ${{ inputs.trunk-api-url }}
+
+    - name: Upload Impacted Targets (GitHub Actions login)
+      # Without a session the CLI would report a missing login instead of the login step's failure.
+      if:
+        inputs.upload-targets == 'true' && inputs.auth == 'github-actions' && steps.login.outcome ==
+        'success'
+      run: ${GITHUB_ACTION_PATH}/src/scripts/upload_impacted_targets_github_actions.sh
+      shell: bash
+      continue-on-error: true
+      env:
+        TARGET_BRANCH: ${{ steps.prerequisites.outputs.merge_instance_branch }}
+        PR_NUMBER: ${{ github.event.pull_request.number }}
+        # Lets a long fork-PR job renew its login.
+        GITHUB_TOKEN: ${{ github.token }}
         PR_SHA: ${{ steps.prerequisites.outputs.pr_branch_upload_head_sha }}
         IMPACTED_TARGETS_FILE:
           ${{ steps.compute-impacted-targets-upload.outputs.impacted_targets_out }}
