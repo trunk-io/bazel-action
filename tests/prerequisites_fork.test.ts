@@ -22,7 +22,6 @@ describe("prerequisites on a fork pull request", () => {
     const origin = path.join(dir, "origin.git");
     const work = path.join(dir, "work");
     git(dir, "init", "-q", "--bare", "-b", "main", origin);
-    git(origin, "config", "uploadpack.allowAnySHA1InWant", "true");
     git(dir, "init", "-q", "-b", "main", work);
     git(work, "commit", "-q", "--allow-empty", "-m", "base");
     git(work, "push", "-q", `file://${origin}`, "main");
@@ -63,7 +62,7 @@ describe("prerequisites on a fork pull request", () => {
         .filter(Boolean)
         .map((line) => line.split("=", 2)),
     );
-    return { status: result.status, outputs };
+    return { status: result.status, stderr: result.stderr, outputs };
   };
 
   it("uses the event's head sha", () => {
@@ -72,7 +71,19 @@ describe("prerequisites on a fork pull request", () => {
     expect(outputs.pr_branch_upload_head_sha).toBe(forkSha);
   });
 
+  // Proves the fixture is a fork: its branch is not on origin.
   it("cannot resolve the head from the branch name alone", () => {
-    expect(run({}).status).not.toBe(0);
+    const { status, stderr } = run({});
+    expect(status).not.toBe(0);
+    expect(stderr).toContain("couldn't find remote ref fork-branch");
+  });
+
+  // The action's own CI matrix sets PR_SETUP_BRANCH on pull_request events, where PR_HEAD_SHA is set too.
+  it("keeps the test matrix on its setup branch", () => {
+    git(checkout, "fetch", "-q", "origin", "main:setup-branch");
+    const setupSha = git(checkout, "rev-parse", "setup-branch");
+    const { status, outputs } = run({ PR_HEAD_SHA: forkSha, PR_SETUP_BRANCH: "setup-branch" });
+    expect(status).toBe(0);
+    expect(outputs.pr_branch_upload_head_sha).toBe(setupSha);
   });
 });
