@@ -54,6 +54,41 @@ jobs:
 
 <!-- end usage -->
 
+### Without a Trunk secret: `auth: github-actions`
+
+Instead of an API token, the action can log in with the run's own GitHub credential through
+[trunk-io/login](https://github.com/trunk-io/login). There is no Trunk secret to store or rotate,
+and the login it makes can only upload this repository's impacted targets.
+
+To switch, change three things in the workflow:
+
+```yaml
+jobs:
+  compute_impacted_targets:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: read # only needed with impact-all-filters-path on a private repository
+      id-token: write # 1. the run's OIDC token
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: trunk-io/bazel-action@v1
+        with:
+          upload-targets: "true"
+          auth: github-actions # 2. log in with GitHub instead of a token
+          # 3. remove `trunk-token`, then delete the secret once nothing else uses it
+```
+
+- **Pull requests from this repository** use the run's OIDC token, which is why the job needs
+  `id-token: write`.
+- **Pull requests from forks** are not supported by this action yet: it resolves the pull request's
+  head from a branch on this repository, which a fork's branch is not.
+- The login can only upload impacted targets for this repository. Every other Trunk API refuses it.
+
+`auth` defaults to `trunk-token`, so existing workflows are unchanged until they opt in. The login
+runs on Linux (x64, arm64) and Apple silicon macOS runners.
+
 ### Tests
 
 ```bash
