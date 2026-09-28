@@ -54,6 +54,11 @@ jobs:
 
 <!-- end usage -->
 
+Run this action on `pull_request`, never `pull_request_target`. It runs the pull request's code
+(Bazel evaluates its BUILD files and repository rules), and under `pull_request_target` a fork's
+code would run with this repository's secrets, its OIDC identity and, unless `permissions` narrows
+it, a write-scoped `GITHUB_TOKEN`.
+
 ### Without a Trunk secret: `auth: github-actions`
 
 Instead of an API token, the action can log in with the run's own GitHub credential through
@@ -86,9 +91,6 @@ jobs:
   commit. An organization admin must turn on **Fork PR CI access** for the repository in Trunk
   (Settings → Repositories). GitHub may hold a first-time contributor's run until a maintainer
   approves it.
-- Run it on `pull_request`, never `pull_request_target`: the action builds the pull request's code,
-  and under `pull_request_target` a fork's code would run with this repository's secrets and a
-  write-scoped token.
 - The login can only upload impacted targets for this repository. Every other Trunk API refuses it.
 
 `auth` defaults to `trunk-token`, so existing workflows are unchanged until they opt in. The login

@@ -76,12 +76,17 @@ describe("prerequisites on a fork pull request", () => {
     const { status, stderr } = run({});
     expect(status).not.toBe(0);
     expect(stderr).toContain("couldn't find remote ref fork-branch");
+    expect(stderr).toContain("unknown revision");
   });
 
   // The action's own CI matrix sets PR_SETUP_BRANCH on pull_request events, where PR_HEAD_SHA is set too.
   it("keeps the test matrix on its setup branch", () => {
-    git(checkout, "fetch", "-q", "origin", "main:setup-branch");
+    git(checkout, "checkout", "-q", "-b", "setup-branch");
+    git(checkout, "commit", "-q", "--allow-empty", "-m", "setup");
     const setupSha = git(checkout, "rev-parse", "setup-branch");
+    git(checkout, "checkout", "-q", "main");
+    expect(setupSha).not.toBe(forkSha);
+    expect(setupSha).not.toBe(git(checkout, "rev-parse", "origin/main"));
     const { status, outputs } = run({ PR_HEAD_SHA: forkSha, PR_SETUP_BRANCH: "setup-branch" });
     expect(status).toBe(0);
     expect(outputs.pr_branch_upload_head_sha).toBe(setupSha);
