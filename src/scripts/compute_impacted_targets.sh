@@ -170,6 +170,7 @@ _bazel_diff get-impacted-targets \
 
 num_impacted_targets=$(wc -l <"${impacted_targets_out}")
 echo "Computed ${num_impacted_targets} targets for sha ${PR_BRANCH_HEAD_SHA}"
+ifVerbose cat "${impacted_targets_out}"
 
 # Outputs
 if [[ -v GITHUB_OUTPUT && -f ${GITHUB_OUTPUT} ]]; then

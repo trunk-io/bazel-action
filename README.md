@@ -58,7 +58,7 @@ jobs:
 
 Instead of an API token, the action can log in with the run's own GitHub credential through
 [trunk-io/login](https://github.com/trunk-io/login). There is no Trunk secret to store or rotate,
-and the login it makes can only upload this repository's impacted targets.
+and it works on pull requests from forks, where repository secrets are not available.
 
 To switch, change three things in the workflow:
 
@@ -82,8 +82,10 @@ jobs:
 
 - **Pull requests from this repository** use the run's OIDC token, which is why the job needs
   `id-token: write`.
-- **Pull requests from forks** are not supported by this action yet: it resolves the pull request's
-  head from a branch on this repository, which a fork's branch is not.
+- **Pull requests from forks** use the job's `GITHUB_TOKEN`, bound to that pull request and its head
+  commit. An organization admin must turn on **Fork PR CI access** for the repository in Trunk
+  (Settings → Repositories). GitHub may hold a first-time contributor's run until a maintainer
+  approves it.
 - The login can only upload impacted targets for this repository. Every other Trunk API refuses it.
 
 `auth` defaults to `trunk-token`, so existing workflows are unchanged until they opt in. The login

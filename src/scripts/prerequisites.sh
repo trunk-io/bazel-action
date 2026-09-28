@@ -11,6 +11,11 @@ fetchRemoteGitHistory() {
 
 # PR_SETUP_BRANCH used for testing only
 pr_branch=${PR_SETUP_BRANCH:-${PR_BRANCH:-HEAD}}
+# The event's head sha, not the head branch: a fork's branch does not exist on origin.
+pr_head_sha=""
+if [[ -z ${PR_SETUP_BRANCH-} ]]; then
+	pr_head_sha=${PR_HEAD_SHA-}
+fi
 
 merge_instance_branch="${TARGET_BRANCH}"
 if [[ -z ${merge_instance_branch} ]]; then
@@ -49,7 +54,11 @@ if [[ -n ${IMPACTS_FILTERS_CHANGES+x} ]]; then
 fi
 
 fetchRemoteGitHistory "${merge_instance_branch}"
-fetchRemoteGitHistory "${pr_branch}" || echo "skipping PR branch fetch"
+if [[ -n ${pr_head_sha} ]]; then
+	fetchRemoteGitHistory "${pr_head_sha}"
+else
+	fetchRemoteGitHistory "${pr_branch}" || echo "skipping PR branch fetch"
+fi
 
 merge_instance_sha=$(git rev-parse --verify -q "${merge_instance_branch}" || echo "-invalid")
 if [[ ${merge_instance_branch} == "${merge_instance_sha}" ]]; then
@@ -60,7 +69,9 @@ else
 	merge_instance_branch_head_sha=$(git rev-parse "origin/${merge_instance_branch}")
 fi
 
-if ! pr_branch_upload_head_sha=$(git rev-parse "${pr_branch}"); then
+if [[ -n ${pr_head_sha} ]]; then
+	pr_branch_upload_head_sha=$(git rev-parse --verify "${pr_head_sha}^{commit}")
+elif ! pr_branch_upload_head_sha=$(git rev-parse "${pr_branch}"); then
 	pr_branch_upload_head_sha=$(git rev-parse "origin/${pr_branch}")
 fi
 # Testing head SHA varies because we want to use HEAD rather than github.head_ref to accurately detect targets that are actually present to be queryable/testable
