@@ -5,7 +5,7 @@ permissions: read-all
 
 jobs:
   tests_compute_targets:
-    runs-on: ubuntu-latest
+    runs-on: "trunk-staging=${{ github.run_id }}-${{ github.run_attempt }}..size=medium..memory=high"
     name: Compute Impacted Targets Tests
     steps:
       - name: Checkout

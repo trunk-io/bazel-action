@@ -15,7 +15,7 @@ on:
 
 jobs:
   tag:
-    runs-on: ubuntu-latest
+    runs-on: "trunk-staging=${{ github.run_id }}-${{ github.run_attempt }}..size=medium..memory=high"
     steps:
       - uses: actions/checkout@v3
         with:
