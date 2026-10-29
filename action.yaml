@@ -8,7 +8,8 @@ inputs:
       How the upload authenticates. `trunk-token` (default) uses the trunk-token input.
       `github-actions` logs in with the run's own GitHub credential through trunk-io/login: no Trunk
       secret, pull requests from forks included. It needs `permissions: id-token: write` on the job,
-      and for fork PRs, Fork PR CI access turned on for the repository in Trunk.
+      and for fork PRs, Impacted targets from fork PRs turned on for the repository in Trunk
+      (a merge queue's Settings → GitHub).
     required: false
     default: trunk-token
   trunk-api-url:
@@ -176,7 +177,7 @@ runs:
       id: login
       if: inputs.upload-targets == 'true' && inputs.auth == 'github-actions'
       continue-on-error: true
-      uses: trunk-io/login@dd43b5c040326ee204a3d1f18f5522a717466ce2 # main; move to v1 once tagged
+      uses: trunk-io/login@v1
       with:
         api-url: ${{ inputs.trunk-api-url }}
 

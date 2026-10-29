@@ -88,8 +88,8 @@ jobs:
 - **Pull requests from this repository** use the run's OIDC token, which is why the job needs
   `id-token: write`.
 - **Pull requests from forks** use the job's `GITHUB_TOKEN`, bound to that pull request and its head
-  commit. An organization admin must turn on **Fork PR CI access** for the repository in Trunk
-  (Settings → Repositories). GitHub may hold a first-time contributor's run until a maintainer
+  commit. An organization admin must turn on **Impacted targets from fork PRs** for the repository
+  in Trunk (**Merge Queue** → any of the repository's queues → **Settings** → **GitHub**). GitHub may hold a first-time contributor's run until a maintainer
   approves it.
 - The login can only upload impacted targets for this repository. Every other Trunk API refuses it.
 
